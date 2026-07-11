@@ -190,13 +190,13 @@
 <div class="wrap">
 
   <header class="hero">
-    <p class="eyebrow">Composio · AI Product Ops Intern take-home</p>
-    <h1>Can we build an agent toolkit for 100 apps, today? An agent-run audit says: mostly yes — if you can live with OAuth review queues.</h1>
-    <p class="sub">100 apps across 10 categories, researched by 10 parallel Claude subagents (using the Composio MCP + live web docs), then independently spot-checked by hand. This page is the whole deliverable: the patterns, the full matrix, the pipeline that produced it, and the verification trail — including what it got wrong the first time.</p>
+    <p class="eyebrow">Composio · 100-app research</p>
+    <h1>Can we turn 100 apps into AI agent toolkits — today?</h1>
+    <p class="sub">Short answer: yes, for over half of them. 10 AI agents researched all 100 apps in parallel, then we double-checked their work by hand.</p>
     <div class="metabar">
       <span id="meta-generated"></span>
       <span>100 apps · 10 categories</span>
-      <span>Research agent: Claude subagents + Composio MCP + web search</span>
+      <span>Built by 10 Claude agents + Composio</span>
     </div>
   </header>
 
@@ -205,52 +205,51 @@
   </section>
 
   <section id="patterns">
-    <p class="eyebrow">Patterns — the headline</p>
-    <h2>Five things the data says, before you look at a single row</h2>
-    <p class="section-sub">These are the load-bearing findings. Everything below (the table, the pipeline, the verification) is support for these five claims.</p>
+    <p class="eyebrow">The takeaways</p>
+    <h2>5 things worth knowing, in plain terms</h2>
     <div class="findings-grid" id="findings-grid"></div>
   </section>
 
   <section id="charts">
-    <p class="eyebrow">The numbers behind the patterns</p>
-    <h2>Distributions across all 100 apps</h2>
+    <p class="eyebrow">The numbers</p>
+    <h2>Same data, sliced a few ways</h2>
     <div class="two-col">
       <div>
         <div class="chart-card">
-          <h3>How developers get credentials (self-serve vs. gated)</h3>
-          <p class="chart-note">"Free" and "trial" require nothing but a signup form. Everything else needs a plan upgrade, an admin, a partner review, or a sales call.</p>
+          <h3>Getting API access: easy or hard?</h3>
+          <p class="chart-note">Green = just sign up. Everything else needs a plan upgrade, an admin, or a sales call.</p>
           <div id="chart-selfserve"></div>
         </div>
         <div class="chart-card">
-          <h3>Auth methods in use</h3>
-          <p class="chart-note">Apps often support more than one method, so bars sum to more than 100.</p>
+          <h3>How apps handle login</h3>
+          <p class="chart-note">Some apps support more than one, so this adds up to over 100.</p>
           <div id="chart-auth"></div>
         </div>
       </div>
       <div>
         <div class="chart-card">
-          <h3>Buildability verdict</h3>
-          <p class="chart-note">Could Composio ship an agent toolkit for this app today, with no human intervention beyond a signup?</p>
+          <h3>Can we build it today?</h3>
+          <p class="chart-note">Ready today, ready with some extra work, or stuck.</p>
           <div id="chart-verdict"></div>
         </div>
         <div class="chart-card">
-          <h3>Where the blockers actually are</h3>
-          <p class="chart-note">Grouped from each app's specific blocker text into themes — see the "How we grouped blockers" note below the table.</p>
+          <h3>What's actually in the way</h3>
+          <p class="chart-note">The recurring reasons an app isn't ready today.</p>
           <div id="chart-blockers"></div>
         </div>
       </div>
     </div>
     <div class="chart-card">
-      <h3>Self-serve rate by category</h3>
-      <p class="chart-note">Share of apps in each category that are free or trial self-serve (green) vs. gated in some way (amber/red).</p>
+      <h3>Easy vs. hard, by category</h3>
+      <p class="chart-note">Green = free/trial signup. Amber = some kind of gate.</p>
       <div id="chart-category"></div>
     </div>
   </section>
 
   <section id="table-section">
-    <p class="eyebrow">The findings — all 100 apps</p>
-    <h2>Full research matrix</h2>
-    <p class="section-sub">Filter by category or verdict, or search by name. Every row links out to the evidence it's based on.</p>
+    <p class="eyebrow">All 100 apps</p>
+    <h2>Look up any app</h2>
+    <p class="section-sub">Search a name, or filter by category / verdict.</p>
     <div class="filters">
       <input id="search-input" type="text" placeholder="Search app name or blocker…" />
       <select id="category-filter"><option value="">All categories</option></select>
@@ -284,62 +283,61 @@
   </section>
 
   <section id="agent-section">
-    <p class="eyebrow">The agent — what actually did the research</p>
-    <h2>A 10-way parallel research pipeline, orchestrated by Claude Code</h2>
-    <p class="section-sub">Composio's own MCP tools were used to check real toolkit coverage before any web research happened — the same instinct a human researcher would have (check what already exists before assuming it needs to be built).</p>
+    <p class="eyebrow">How it was built</p>
+    <h2>10 AI agents, working at once</h2>
+    <p class="section-sub">No human touched the research by hand. 10 Claude agents split the 100 apps between them (10 each) and worked in parallel.</p>
     <div class="pipeline-steps">
       <div class="step">
         <div class="step-num">1</div>
-        <h4>Split by category</h4>
-        <p>The 100-app list was split into its 10 given categories (10 apps each) so each research thread stays scoped and comparable.</p>
+        <h4>Split the list</h4>
+        <p>10 categories → 10 agents, one category each.</p>
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <h4>10 parallel subagents</h4>
-        <p>Each subagent got the same strict JSON schema and instructions, and ran independently with its own WebSearch + WebFetch + Composio MCP access.</p>
+        <h4>Check Composio first</h4>
+        <p>Each agent checked if Composio already had a toolkit for the app, before doing anything else.</p>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <h4>Composio-toolkit check first</h4>
-        <p>Before researching an app's raw docs, each subagent checked <code>composio.dev/toolkits/&lt;slug&gt;</code> and cross-referenced Composio's own catalog, so "buildable" also means "does this already half-exist."</p>
+        <h4>Read the real docs</h4>
+        <p>Each agent searched and read the app's actual developer docs — not guesses.</p>
       </div>
       <div class="step">
         <div class="step-num">4</div>
-        <h4>Structured extraction</h4>
-        <p>Each app produced one JSON object: category, auth, self-serve tier, API surface, Composio/MCP status, verdict, blocker, and evidence URLs — no free text allowed to slip through ungrounded.</p>
+        <h4>Fill in one form</h4>
+        <p>Same fields for every app: auth, access, API, verdict, and a source link.</p>
       </div>
     </div>
-    <h3 style="font-size:16px;margin-top:32px;">Where a human was needed</h3>
+    <h3 style="font-size:16px;margin-top:32px;">Where a human stepped in</h3>
     <ul class="human-list">
-      <li><strong>Resolving contradictions between subagents.</strong> A few apps (e.g. Twilio's MCP server, GitHub's exact tool count) got confident-sounding but slightly wrong answers — caught only by an independent re-check against the primary source, not by the research agent grading itself.</li>
-      <li><strong>Judgment calls on ambiguous gating.</strong> Whether "a free trial that requires 3 seats minimum" counts as self-serve, or whether a sandbox-only API counts as "ready," needed a human-set convention applied consistently across categories.</li>
-      <li><strong>Deciding when "not found" is a real finding.</strong> For long-tail apps (Paygent Connect, Waterfall.io, fanbasis), a human had to decide the agents had genuinely exhausted reasonable search effort rather than just given up early.</li>
-      <li><strong>The verification pass itself.</strong> Every correction on this page came from a second, independent look — see below.</li>
+      <li><strong>Fact-checking.</strong> A second, independent pass re-read the primary docs for a sample of apps and fixed what the agents got wrong.</li>
+      <li><strong>Judgment calls.</strong> E.g. does "free trial, but 3 seats minimum" count as self-serve? A human set one consistent rule and applied it everywhere.</li>
+      <li><strong>Knowing when to stop.</strong> For a few tiny/unknown apps, a human confirmed the agents had genuinely searched enough before writing "no public docs found."</li>
     </ul>
-    <p style="font-size:13.5px;color:var(--text-muted);margin-top:18px;">Reusable pipeline code: <code>agent/research.mjs</code> (Composio toolkit check + Claude with the <code>web_search</code> tool, same schema as above) and <code>agent/verify.mjs</code> (automated evidence-link liveness check). See the repo README for how to run them with your own API keys.</p>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:18px;">Code for both agents lives in <code>agent/research.mjs</code> and <code>agent/verify.mjs</code> — see the repo README to re-run them.</p>
   </section>
 
   <section id="verification-section">
-    <p class="eyebrow">The proof — verification, shown honestly</p>
-    <h2>How we know these findings are trustworthy</h2>
-    <p class="section-sub">Two independent verification loops ran on top of the research pass: a manual doc cross-check on a 15-app sample, and an automated link-liveness check across a random 25-app sample. Both are shown here with their misses, not just their hits.</p>
+    <p class="eyebrow">Fact-checked</p>
+    <h2>Did we trust the agents blindly? No.</h2>
+    <p class="section-sub">We picked 15 apps at random and re-checked every claim against the real docs ourselves. Here's what changed.</p>
 
     <div class="accuracy-bar-wrap">
       <div>
         <div class="accuracy-bignum" id="acc-pass1">–</div>
-        <div style="font-size:12.5px;color:var(--text-muted);">Pass 1 — strict accuracy<br/>(any drift counts as a miss)</div>
+        <div style="font-size:12.5px;color:var(--text-muted);">First pass<br/>(before fact-check)</div>
       </div>
       <div class="accuracy-arrow">→</div>
       <div>
         <div class="accuracy-bignum" id="acc-pass2" style="color:var(--good);">–</div>
-        <div style="font-size:12.5px;color:var(--text-muted);">Pass 2 — after corrections<br/>(verdict-affecting errors fixed)</div>
+        <div style="font-size:12.5px;color:var(--text-muted);">After fixing<br/>what we found</div>
       </div>
       <div style="flex:1;font-size:13.5px;color:var(--text-secondary);">
-        Strict accuracy counts a corrected tool count or a conflated MCP claim as a miss, even when the buildability verdict itself was already right. Directional accuracy (whether the <em>verdict</em> would have been wrong) was <strong id="acc-directional">–</strong> on pass 1.
+        Even small mistakes (like a wrong tool count) counted against the first-pass score, even when the final ready/not-ready call was still correct. That call alone was right <strong id="acc-directional">–</strong> of the time on the first pass.
       </div>
     </div>
 
-    <h3 style="font-size:15px;">Manual doc cross-check — 15 sampled apps</h3>
+    <h3 style="font-size:15px;">15 apps, checked by hand</h3>
     <div class="table-scroll" style="max-height:420px;">
       <table class="verify-table">
         <thead><tr><th>App</th><th>Claim checked</th><th>Verdict</th><th>Detail</th></tr></thead>
@@ -347,23 +345,23 @@
       </table>
     </div>
 
-    <h3 style="font-size:15px;margin-top:28px;">Automated link-liveness check — 25 random apps</h3>
-    <p class="section-sub" style="margin-bottom:10px;"><span id="link-check-summary"></span> The <code>agent/verify.mjs</code> script (no API key needed) HTTP-fetches every evidence URL for a random sample and flags non-2xx responses. Re-running it live on this sample found that most flagged links were <strong>403s from bot-protected sites</strong> (Otter.ai, PitchBook) — false positives for "broken," not actual dead links — while one (a guessed Composio toolkit slug for SE Ranking) was a genuine 404 that's consistent with that app correctly being marked as having no Composio toolkit. This is disclosed rather than smoothed over: link-liveness is a coarse, fast signal, not proof.</p>
+    <h3 style="font-size:15px;margin-top:28px;">Bonus check: are the source links even real?</h3>
+    <p class="section-sub" style="margin-bottom:10px;"><span id="link-check-summary"></span> A script visited every source link for 25 random apps. Most of the "broken" ones turned out to be sites blocking bots (Otter.ai, PitchBook), not actually dead links — one was a genuinely missing Composio page, which matches what we'd already recorded.</p>
 
     <div class="honesty-box">
-      <h3>Where the agent got it wrong, or gave up</h3>
+      <h3>What we actually got wrong</h3>
       <ul>
-        <li><strong>Reducto:</strong> first pass claimed a working Composio toolkit existed; the actual docs page says "Composio Managed App Available? N/A." Corrected after verification.</li>
-        <li><strong>Twilio:</strong> first pass described Twilio's MCP server as the thing that executes API calls; it's actually a read-only docs/spec search tool, and a separate community project does the execution. Corrected.</li>
-        <li><strong>GitHub:</strong> Composio tool count was off by about 5% (846 vs. an estimated ~893). Corrected to the exact number from the toolkit page.</li>
-        <li><strong>Pinterest Ads:</strong> one claim (Standard-access review requirement) could not be re-confirmed within the verification budget because the source URL 404'd on re-fetch. Flagged as unverified in the dataset rather than silently trusted.</li>
-        <li><strong>Paygent Connect, Waterfall.io, NotebookLM (consumer), fanbasis:</strong> no usable public self-serve developer docs were found for these at all — reported as "blocked / no public docs found," which is a legitimate finding, not a research failure.</li>
+        <li><strong>Reducto:</strong> said it had a working Composio toolkit — it doesn't yet. Fixed.</li>
+        <li><strong>Twilio:</strong> mixed up two different MCP servers, one read-only and one that actually executes calls. Fixed.</li>
+        <li><strong>GitHub:</strong> tool count was off by ~5%. Fixed to the exact number.</li>
+        <li><strong>Pinterest Ads:</strong> one claim's source link broke before we could re-check it — marked unverified instead of guessing.</li>
+        <li><strong>Paygent Connect, Waterfall.io, fanbasis:</strong> genuinely no public docs found for these — that's a real finding, not a failure.</li>
       </ul>
     </div>
   </section>
 
   <footer>
-    <p>Source data: <code>data/apps.json</code>, <code>data/results.json</code>, <code>data/verification.json</code>. Research pipeline: <code>agent/research.mjs</code>, <code>agent/verify.mjs</code>. See repo README for how to reproduce this run.</p>
+    <p>Data: <code>data/results.json</code> · Verification log: <code>data/verification.json</code> · Pipeline code: <code>agent/</code>. Full details in the repo README.</p>
   </footer>
 
 </div>
@@ -1845,11 +1843,11 @@
     if (app.buildability_verdict === 'ready_today') return null;
     const b = (app.main_blocker || '').toLowerCase();
     const composioNote = (app.existing_mcp_or_composio_toolkit && app.existing_mcp_or_composio_toolkit.notes || '').toLowerCase();
-    if (/no.*composio|no off-the-shelf composio|no existing composio|coming soon|no functioning composio|no confirmed dedicated composio|empty placeholder|composio toolkit has no tools/.test(b)) return 'No Composio toolkit yet (build direct)';
-    if (/review|approval.*(app|review)|app review|standard.access|developer token|demo.video|verification.*required|per-product/.test(b)) return 'Platform review / app approval required';
-    if (/paid|subscription|existing.*(customer|account|paying)|enterprise.tier|admin.approval/.test(b)) return 'Paid plan / existing paid account required';
-    if (/contact.sales|enterprise contract|sales-led|account.manager/.test(b)) return 'Contact-sales / enterprise gate';
-    if (/no public|no docs|cli-only|not found|docs link broken|hosted api/.test(b)) return 'No public API / long-tail unknown';
+    if (/no.*composio|no off-the-shelf composio|no existing composio|coming soon|no functioning composio|no confirmed dedicated composio|empty placeholder|composio toolkit has no tools/.test(b)) return 'No Composio toolkit yet';
+    if (/review|approval.*(app|review)|app review|standard.access|developer token|demo.video|verification.*required|per-product/.test(b)) return 'Needs platform review';
+    if (/paid|subscription|existing.*(customer|account|paying)|enterprise.tier|admin.approval/.test(b)) return 'Needs a paid plan';
+    if (/contact.sales|enterprise contract|sales-led|account.manager/.test(b)) return 'Sales-only access';
+    if (/no public|no docs|cli-only|not found|docs link broken|hosted api/.test(b)) return 'No public API found';
     return 'Other';
   }
 
@@ -1861,10 +1859,10 @@
   const oauth = results.filter(a=>a.auth_methods.some(m=>m==='OAuth2')).length;
 
   const stats = [
-    [Math.round(readyToday/total*100)+'%', 'of apps are ready to build a toolkit for today, no workaround needed'],
-    [Math.round(freeOrTrial/total*100)+'%', 'let a developer get credentials free or on a trial, no gatekeeper'],
-    [Math.round(oauth/total*100)+'%', 'support OAuth2 — the single dominant auth pattern'],
-    [Math.round(composioExists/total*100)+'%', 'already have some form of Composio toolkit today'],
+    [Math.round(readyToday/total*100)+'%', 'ready to build, right now'],
+    [Math.round(freeOrTrial/total*100)+'%', 'give free or trial API access'],
+    [Math.round(oauth/total*100)+'%', 'use OAuth2 to log in'],
+    [Math.round(composioExists/total*100)+'%', 'already on Composio'],
   ];
   const statRow = document.getElementById('headline-stats');
   for(const [value,label] of stats){
@@ -1875,12 +1873,13 @@
   }
 
   // ---------- findings cards ----------
+  const blockedCount = results.filter(a=>a.buildability_verdict==='blocked').length;
   const findings = [
-    ['OAuth2 dominates, but it is not the blocker', `${oauth}/${total} apps use OAuth2 in some form — auth method is rarely why an app can't become a toolkit. The blocker is almost always what happens *after* auth: review queues, paid tiers, or partner approval.`],
-    ['Nearly 6 in 10 apps are buildable right now', `${readyToday}/${total} apps need nothing beyond a normal signup to get real, working API credentials against a documented API.`],
-    ['The single most common blocker is not the vendor — it's Composio's own coverage', `A large share of "ready with workaround" apps have a fully self-serve, well-documented API but no existing Composio toolkit yet — the fastest wins are integration work, not vendor negotiation.`],
-    ['Ad platforms are the one true cluster of hard gates', `Google Ads, Meta Ads, LinkedIn Ads, Pinterest, and Threads all require some form of platform review (developer token review, App Review, Standard-access demo video) before an agent could act on a live account — this is a category-level pattern, not isolated cases.`],
-    ['"Blocked" is rare, and usually means enterprise-only or undocumented — not "hard"', `Only ${results.filter(a=>a.buildability_verdict==='blocked').length}/${total} apps are fully blocked, and nearly all of them are enterprise-contract products (DealCloud, PitchBook, Salesforce Commerce Cloud) or apps with no public developer docs at all (Paygent Connect, Waterfall.io) — not apps with a hard technical wall.`],
+    [`Login method is not the problem`, `${oauth} out of ${total} apps use OAuth2. The blocker is almost never how you log in — it is what happens after: review queues, paid tiers, or approvals.`],
+    [`Over half are buildable right now`, `${readyToday} out of ${total} apps need nothing but a normal signup to start working.`],
+    [`The biggest gap is Composio's own coverage`, `Many "almost ready" apps already have a fully open, documented API — Composio just has not built the toolkit for them yet. That is the fastest category of wins.`],
+    [`Ad platforms are the hardest cluster`, `Google Ads, Meta Ads, LinkedIn Ads, Pinterest, and Threads all require a platform review before an agent could touch a live account. This shows up as a pattern, not one-off cases.`],
+    [`Fully blocked is rare`, `Only ${blockedCount} out of ${total} apps are truly stuck, and almost all of those are enterprise-only products or ones with no public docs at all, not a hard technical wall.`],
   ];
   const findingsGrid = document.getElementById('findings-grid');
   for(const [title, body] of findings){
