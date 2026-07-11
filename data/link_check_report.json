@@ -1,0 +1,196 @@
+{
+  "sampled": 25,
+  "totalUrls": 60,
+  "totalBroken": 7,
+  "report": [
+    {
+      "id": 25,
+      "name": "Pumble",
+      "total_evidence_urls": 2,
+      "broken_links": []
+    },
+    {
+      "id": 57,
+      "name": "Bright Data",
+      "total_evidence_urls": 3,
+      "broken_links": []
+    },
+    {
+      "id": 85,
+      "name": "iPayX",
+      "total_evidence_urls": 2,
+      "broken_links": []
+    },
+    {
+      "id": 17,
+      "name": "Plain",
+      "total_evidence_urls": 2,
+      "broken_links": []
+    },
+    {
+      "id": 54,
+      "name": "MrScraper",
+      "total_evidence_urls": 2,
+      "broken_links": []
+    },
+    {
+      "id": 47,
+      "name": "Ecwid",
+      "total_evidence_urls": 2,
+      "broken_links": []
+    },
+    {
+      "id": 5,
+      "name": "Twenty",
+      "total_evidence_urls": 2,
+      "broken_links": []
+    },
+    {
+      "id": 92,
+      "name": "Otter AI",
+      "total_evidence_urls": 3,
+      "broken_links": [
+        {
+          "url": "https://help.otter.ai/hc/en-us/articles/36130822688279-Otter-ai-Public-API",
+          "ok": false,
+          "status": 403
+        },
+        {
+          "url": "https://help.otter.ai/hc/en-us/articles/35287607569687-Otter-MCP-Server",
+          "ok": false,
+          "status": 403
+        },
+        {
+          "url": "https://help.otter.ai/hc/en-us/articles/4412365535895-Does-Otter-offer-an-open-API",
+          "ok": false,
+          "status": 403
+        }
+      ]
+    },
+    {
+      "id": 97,
+      "name": "higgsfield",
+      "total_evidence_urls": 3,
+      "broken_links": []
+    },
+    {
+      "id": 56,
+      "name": "Firecrawl",
+      "total_evidence_urls": 2,
+      "broken_links": []
+    },
+    {
+      "id": 18,
+      "name": "Help Scout",
+      "total_evidence_urls": 1,
+      "broken_links": []
+    },
+    {
+      "id": 89,
+      "name": "Ramp",
+      "total_evidence_urls": 3,
+      "broken_links": []
+    },
+    {
+      "id": 68,
+      "name": "MongoDB Atlas",
+      "total_evidence_urls": 3,
+      "broken_links": []
+    },
+    {
+      "id": 52,
+      "name": "SE Ranking",
+      "total_evidence_urls": 2,
+      "broken_links": [
+        {
+          "url": "https://composio.dev/toolkits/seranking",
+          "ok": false,
+          "status": 404
+        }
+      ]
+    },
+    {
+      "id": 90,
+      "name": "PitchBook",
+      "total_evidence_urls": 2,
+      "broken_links": [
+        {
+          "url": "https://pitchbook.com/products/direct-access-data/api",
+          "ok": false,
+          "status": 403
+        },
+        {
+          "url": "https://pitchbook.com/help/PitchBook-api",
+          "ok": false,
+          "status": 403
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Gorgias",
+      "total_evidence_urls": 3,
+      "broken_links": []
+    },
+    {
+      "id": 42,
+      "name": "WooCommerce",
+      "total_evidence_urls": 2,
+      "broken_links": [
+        {
+          "url": "https://composio.dev/tools/woocommerce/all",
+          "ok": false,
+          "status": 404
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Zendesk",
+      "total_evidence_urls": 3,
+      "broken_links": []
+    },
+    {
+      "id": 71,
+      "name": "Notion",
+      "total_evidence_urls": 2,
+      "broken_links": []
+    },
+    {
+      "id": 59,
+      "name": "Waterfall.io",
+      "total_evidence_urls": 2,
+      "broken_links": []
+    },
+    {
+      "id": 36,
+      "name": "Klaviyo",
+      "total_evidence_urls": 2,
+      "broken_links": []
+    },
+    {
+      "id": 30,
+      "name": "Vonage",
+      "total_evidence_urls": 3,
+      "broken_links": []
+    },
+    {
+      "id": 79,
+      "name": "Smartsheet",
+      "total_evidence_urls": 3,
+      "broken_links": []
+    },
+    {
+      "id": 93,
+      "name": "Fathom",
+      "total_evidence_urls": 3,
+      "broken_links": []
+    },
+    {
+      "id": 8,
+      "name": "Close",
+      "total_evidence_urls": 3,
+      "broken_links": []
+    }
+  ]
+}

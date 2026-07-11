@@ -1,0 +1,256 @@
+[
+  {
+    "id": 11,
+    "name": "Zendesk",
+    "category": "Support and Helpdesk",
+    "one_liner": "Cloud-based customer service and support ticketing platform.",
+    "auth_methods": ["OAuth2", "API Key", "Basic"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Developers can sign up for a free 14-day trial account and immediately generate API tokens or OAuth credentials from Admin Center.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "broad",
+      "notes": "Extensive REST API covering tickets, users, orgs, macros, automations, custom objects, and search."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": true,
+      "third_party_mcp_exists": "unknown",
+      "notes": "Composio lists a Zendesk toolkit with 452 tools and 2 triggers using OAuth2."
+    },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": [
+      "https://developer.zendesk.com/api-reference/introduction/security-and-auth/",
+      "https://developer.zendesk.com/documentation/api-basics/getting-started/getting-a-trial-or-sponsored-account-for-development/",
+      "https://composio.dev/toolkits/zendesk"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Intercom",
+    "category": "Support and Helpdesk",
+    "one_liner": "Customer messaging platform combining live chat, help desk, and tickets.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Developer Hub issues an Access Token immediately upon creating an app for your own workspace, no approval needed.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "broad",
+      "notes": "Broad REST API for contacts, conversations, tickets, articles, data events, and analytics."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": true,
+      "third_party_mcp_exists": "unknown",
+      "notes": "Composio lists an Intercom toolkit with 133 tools using OAuth2."
+    },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": [
+      "https://developers.intercom.com/docs/build-an-integration/learn-more/authentication",
+      "https://composio.dev/toolkits/intercom"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Freshdesk",
+    "category": "Support and Helpdesk",
+    "one_liner": "Cloud help desk software for ticketing, automation, and knowledge base.",
+    "auth_methods": ["API Key", "Basic"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "API key is visible in Profile Settings immediately, including on free trial accounts (with lower rate limits).",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "broad",
+      "notes": "REST API covers tickets, contacts, companies, solutions/knowledge base, automations, SLAs, and time tracking."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": true,
+      "third_party_mcp_exists": "unknown",
+      "notes": "Composio lists a Freshdesk toolkit with 178 tools using Basic Auth credentials."
+    },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": [
+      "https://developers.freshdesk.com/api/",
+      "https://composio.dev/toolkits/freshdesk"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Front",
+    "category": "Support and Helpdesk",
+    "one_liner": "Shared inbox and customer communication hub for support teams.",
+    "auth_methods": ["API Key", "OAuth2"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "API tokens can be generated freely in account settings for a single-instance integration; OAuth/public app distribution needs Front's app framework and possible exception approval.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "broad",
+      "notes": "REST API for conversations, messages, contacts, tags, channels, and rules."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": true,
+      "third_party_mcp_exists": "unknown",
+      "notes": "Composio has a Front toolkit/auth-config but notes actions are 'coming soon', so tool coverage is currently narrow/incomplete."
+    },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Composio toolkit tools still limited (coming soon)",
+    "evidence_urls": [
+      "https://dev.frontapp.com/docs/authentication",
+      "https://docs.composio.dev/toolkits/front"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Pylon",
+    "category": "Support and Helpdesk",
+    "one_liner": "Modern B2B customer support and ticketing platform for SaaS companies.",
+    "auth_methods": ["Token", "OAuth2"],
+    "self_serve": "paid_plan_required",
+    "self_serve_notes": "No free trial; plans require an annual contract with seat minimums, but an admin can generate API tokens once subscribed.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "narrow",
+      "notes": "REST API for issues, accounts, and contacts; documented but smaller surface than legacy helpdesks."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": false,
+      "third_party_mcp_exists": true,
+      "notes": "Pylon runs its own official remote MCP server (mcp.usepylon.com) with OAuth; no Composio toolkit found (404 on guessed slug)."
+    },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No free trial; requires paid annual contract",
+    "evidence_urls": [
+      "https://docs.usepylon.com/pylon-docs/developer/api/authentication",
+      "https://docs.usepylon.com/pylon-docs/integrations/pylon-mcp",
+      "https://www.usepylon.com/pricing"
+    ]
+  },
+  {
+    "id": 16,
+    "name": "LiveAgent",
+    "category": "Support and Helpdesk",
+    "one_liner": "Multichannel help desk software with live chat, ticketing, and call center.",
+    "auth_methods": ["API Key"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Admins generate an API key in Configuration > System > API on any account, including trials.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "broad",
+      "notes": "REST API v3 documented per-instance covering tickets, contacts, agents, and devices."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": true,
+      "third_party_mcp_exists": "unknown",
+      "notes": "Composio lists LiveAgent with API_KEY auth but currently zero tools/triggers implemented."
+    },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Composio toolkit has no tools yet; would need direct API integration",
+    "evidence_urls": [
+      "https://support.liveagent.com/741982-API-key",
+      "https://support.liveagent.com/840770-Complete-API-reference",
+      "https://docs.composio.dev/toolkits/liveagent"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Plain",
+    "category": "Support and Helpdesk",
+    "one_liner": "API-first customer support platform built around GraphQL for B2B SaaS.",
+    "auth_methods": ["API Key", "Other: Bearer token via GraphQL"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Create a machine user and generate a scoped API key directly from workspace Settings, no approval needed.",
+    "api_surface": {
+      "type": "GraphQL",
+      "breadth": "broad",
+      "notes": "Full GraphQL API and schema for threads, customers, companies, and tiers, designed API-first."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": true,
+      "third_party_mcp_exists": "unknown",
+      "notes": "Composio lists a Plain toolkit with 22 tools using API key auth, including raw GraphQL query support."
+    },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": [
+      "https://www.plain.com/docs/graphql/authentication",
+      "https://composio.dev/toolkits/plain"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Help Scout",
+    "category": "Support and Helpdesk",
+    "one_liner": "Email-based shared inbox and help desk for small-to-mid customer support teams.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Any user can create a My App from their profile and use the Client Credentials flow to get a bearer token without external approval.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "broad",
+      "notes": "Mailbox API covers conversations, customers, mailboxes, tags, and workflows over HTTPS-only OAuth2."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": "unknown",
+      "third_party_mcp_exists": "unknown",
+      "notes": "Guessed Composio slugs (help-scout, helpscout) both 404'd; a search snippet claimed a listing but could not be verified on an actual page."
+    },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": [
+      "https://developer.helpscout.com/mailbox-api/overview/authentication/"
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Gorgias",
+    "category": "Support and Helpdesk",
+    "one_liner": "Helpdesk built for ecommerce brands, integrating deeply with Shopify and social channels.",
+    "auth_methods": ["API Key", "OAuth2", "Basic"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Private-app API key with HTTP Basic Auth is available directly from account settings; public apps distributed to other users require OAuth2 and Gorgias approval.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "broad",
+      "notes": "REST API for tickets, customers, teams, tags, and account settings."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": true,
+      "third_party_mcp_exists": "unknown",
+      "notes": "Composio lists a Gorgias toolkit with 32 tools, supporting both API Key and OAuth2."
+    },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": [
+      "https://developers.gorgias.com/reference/authentication",
+      "https://developers.gorgias.com/docs/oauth2-authentication-for-creating-apps-with-gorgias",
+      "https://composio.dev/toolkits/gorgias"
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Gladly",
+    "category": "Support and Helpdesk",
+    "one_liner": "Enterprise customer-centric contact center platform unifying voice, chat, and email.",
+    "auth_methods": ["Basic", "Token"],
+    "self_serve": "contact_sales",
+    "self_serve_notes": "No public free trial or self-serve signup; access is sales-led with custom annual contracts, though existing customer admins can self-serve API tokens once onboarded.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "narrow",
+      "notes": "REST API documented for conversations, customers, and webhooks, with a sandbox environment for existing customers."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": false,
+      "third_party_mcp_exists": "unknown",
+      "notes": "Guessed Composio slug (gladly) 404'd and no confirmation found elsewhere; no official MCP server found in docs."
+    },
+    "buildability_verdict": "blocked",
+    "main_blocker": "Contact-sales onboarding, no public trial access",
+    "evidence_urls": [
+      "https://developer.gladly.com/rest/",
+      "https://help.gladly.com/developer-tutorials/docs/authentication",
+      "https://help.gladly.com/implementation/docs/get-your-api-tokens"
+    ]
+  }
+]

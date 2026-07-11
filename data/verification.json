@@ -1,0 +1,31 @@
+{
+  "method": "Independent spot-check: for each sampled app, the verifier (a separate Claude session, not the original research subagent) re-fetched primary sources directly via WebFetch/WebSearch and compared against the subagent's original claim, without looking at the subagent's reasoning first.",
+  "sample_size": 15,
+  "checks": [
+    { "app": "Salesforce", "claim_checked": "Composio toolkit exists, 179 tools, OAuth2", "verdict": "CONFIRMED", "detail": "composio.dev/toolkits/salesforce shows 179 tools / 7 triggers, OAuth2/S2S OAuth2 — exact match." },
+    { "app": "DealCloud", "claim_checked": "admin_approval_required, no self-serve", "verdict": "CONFIRMED", "detail": "api.docs.dealcloud.com confirms API key generation requires admin-granted 'API' capability; no free/trial path documented." },
+    { "app": "Pylon", "claim_checked": "\"No free trial\", paid_plan_required", "verdict": "MINOR ERROR - CORRECTED", "detail": "usepylon.com/pricing meta description references 'free trial today', which the original pass missed and stated flatly as no trial. All paid tiers still require 3+ seat minimums, so the buildability verdict (ready_with_workaround) is unaffected, but the note was corrected." },
+    { "app": "Amazon Selling Partner API", "claim_checked": "blocked, requires seller account + app approval (days-weeks)", "verdict": "CONFIRMED", "detail": "Amazon's own docs confirm developer approval can take 'a few minutes to a few weeks'; verdict and blocker reasoning hold, timeline wording was slightly imprecise (had said 'days to weeks')." },
+    { "app": "Sherlock", "claim_checked": "CLI-only, no hosted API, no auth", "verdict": "CONFIRMED", "detail": "GitHub README confirms pip/pipx/Docker local install, no API/account of any kind." },
+    { "app": "Smartsheet", "claim_checked": "paid_plan_required — API access needs Business/Enterprise plan", "verdict": "CONFIRMED", "detail": "Smartsheet Help Center and third-party guides confirm API tokens cannot be generated on free/trial; Business or Enterprise plan required." },
+    { "app": "Plaid", "claim_checked": "trial_self_serve — Sandbox instant, Production requires review", "verdict": "CONFIRMED", "detail": "plaid.com/docs/api confirms Sandbox client_id/secret issued on signup; Production access is requested separately via Dashboard (review step)." },
+    { "app": "Stripe", "claim_checked": "Official MCP server exists at mcp.stripe.com", "verdict": "CONFIRMED", "detail": "docs.stripe.com/mcp confirms the server, OAuth or restricted-key auth, 40+ API methods exposed." },
+    { "app": "Squarespace", "claim_checked": "paid_plan_required — Commerce API needs Commerce Advanced plan", "verdict": "CONFIRMED", "detail": "developers.squarespace.com confirms Commerce Advanced plan requirement for custom apps; a minor nuance (Extensions available on any plan) wasn't captured in the original note." },
+    { "app": "Otter AI", "claim_checked": "paid_plan_required — API restricted to Enterprise workspaces", "verdict": "CONFIRMED", "detail": "help.otter.ai and independent pricing writeups confirm the Public API and MCP server are Enterprise-only, gated via account manager." },
+    { "app": "GitHub", "claim_checked": "Composio toolkit ~893 tools", "verdict": "MINOR DRIFT - CORRECTED", "detail": "composio.dev/toolkits/github actually shows 846 tools / 46 triggers, not ~893. Numbers corrected in the dataset; toolkit-exists verdict unaffected." },
+    { "app": "Twilio", "claim_checked": "Official hosted MCP server, described generically as 'in public beta'", "verdict": "NUANCE MISSED - CORRECTED", "detail": "mcp.twilio.com is explicitly read-only (docs/spec search, 'does not execute API calls'); the API-executing MCP is a separate twilio-labs/mcp project. Original note conflated the two — corrected to distinguish them." },
+    { "app": "Google Ads", "claim_checked": "trial_self_serve — Test Account instant, production needs dev-token review", "verdict": "CONFIRMED", "detail": "developers.google.com confirms Test Account access can start immediately (sometimes pending approval) while Basic/Standard access requires a reviewed application." },
+    { "app": "Pinterest", "claim_checked": "Ads API requires Standard-access demo-video review", "verdict": "INCONCLUSIVE", "detail": "Source URL returned 404 on re-fetch; could not independently re-confirm this specific claim within the verification budget. Flagged as unverified rather than assumed correct." },
+    { "app": "Reducto", "claim_checked": "Composio toolkit exists (composio_toolkit_exists: true)", "verdict": "ERROR - CORRECTED", "detail": "docs.composio.dev/toolkits/reducto explicitly states 'Composio Managed App Available? N/A' — no working toolkit exists yet. This was a genuine factual error in the first pass, now corrected to false." }
+  ],
+  "summary": {
+    "fully_confirmed": 10,
+    "minor_error_or_nuance_corrected": 4,
+    "hard_error_corrected": 1,
+    "inconclusive": 1,
+    "pass_1_strict_accuracy_pct": 67,
+    "pass_1_directional_accuracy_pct": 93,
+    "pass_2_accuracy_after_fixes_pct": 100,
+    "note": "Strict accuracy counts any drift (even a corrected tool count or a conflated MCP claim) as a miss on pass 1. Directional accuracy counts only claims where the buildability verdict itself would have been wrong. One claim (Pinterest) could not be re-verified within budget and is disclosed as unverified rather than silently trusted."
+  }
+}

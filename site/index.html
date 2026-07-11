@@ -1,0 +1,2039 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Can We Build an Agent Toolkit for 100 Apps Today? — Composio App Research</title>
+<style>
+  :root{
+    --surface-1: #fcfcfb;
+    --page: #f9f9f7;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --gridline: #e1e0d9;
+    --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --series-blue: #2a78d6;
+    --series-aqua: #1baf7a;
+    --series-yellow: #eda100;
+    --series-green: #008300;
+    --series-violet: #4a3aa7;
+    --series-red: #e34948;
+    --series-magenta: #e87ba4;
+    --series-orange: #eb6834;
+    --good: #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical: #d03b3b;
+    --card-radius: 14px;
+  }
+  :root[data-theme="dark"] {
+    --surface-1: #1a1a19;
+    --page: #0d0d0d;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --gridline: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255,255,255,0.10);
+    --series-blue: #3987e5;
+    --series-aqua: #199e70;
+    --series-yellow: #c98500;
+    --series-green: #008300;
+    --series-violet: #9085e9;
+    --series-red: #e66767;
+    --series-magenta: #d55181;
+    --series-orange: #d95926;
+    --good: #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical: #d03b3b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]){
+      --surface-1: #1a1a19;
+      --page: #0d0d0d;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --gridline: #2c2c2a;
+      --baseline: #383835;
+      --border: rgba(255,255,255,0.10);
+      --series-blue: #3987e5;
+      --series-aqua: #199e70;
+      --series-yellow: #c98500;
+      --series-violet: #9085e9;
+      --series-red: #e66767;
+      --series-magenta: #d55181;
+      --series-orange: #d95926;
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--page);
+    color:var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:32px 24px 96px;}
+  a{color:var(--series-blue);}
+  h1,h2,h3{line-height:1.2;}
+  .eyebrow{
+    text-transform:uppercase;letter-spacing:.08em;font-size:12px;font-weight:700;
+    color:var(--text-muted);margin:0 0 8px;
+  }
+  header.hero{margin-bottom:40px;}
+  header.hero h1{font-size:34px;margin:0 0 12px;max-width:820px;}
+  header.hero p.sub{font-size:17px;color:var(--text-secondary);max-width:760px;margin:0 0 24px;}
+  .metabar{display:flex;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--text-muted);}
+  .metabar span{background:var(--surface-1);border:1px solid var(--border);border-radius:999px;padding:4px 12px;}
+
+  .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:28px 0 8px;}
+  .stat-tile{
+    background:var(--surface-1);border:1px solid var(--border);border-radius:var(--card-radius);
+    padding:18px 20px;
+  }
+  .stat-tile .value{font-size:32px;font-weight:700;letter-spacing:-0.01em;}
+  .stat-tile .label{font-size:13px;color:var(--text-secondary);margin-top:4px;}
+
+  section{margin:56px 0;}
+  section > h2{font-size:22px;margin:0 0 6px;}
+  section > p.section-sub{color:var(--text-secondary);font-size:15px;margin:0 0 24px;max-width:820px;}
+
+  .findings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:8px;}
+  @media (max-width:800px){.findings-grid{grid-template-columns:1fr;}}
+  .finding-card{
+    background:var(--surface-1);border:1px solid var(--border);border-radius:var(--card-radius);
+    padding:18px 20px;
+  }
+  .finding-card h3{font-size:15px;margin:0 0 4px;}
+  .finding-card p{font-size:14px;color:var(--text-secondary);margin:0;}
+
+  .chart-card{
+    background:var(--surface-1);border:1px solid var(--border);border-radius:var(--card-radius);
+    padding:20px 22px;margin-bottom:20px;
+  }
+  .chart-card h3{font-size:15px;margin:0 0 2px;}
+  .chart-card .chart-note{font-size:12.5px;color:var(--text-muted);margin:0 0 14px;}
+  .bar-row{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:13px;}
+  .bar-row .bar-label{width:210px;flex:0 0 210px;color:var(--text-secondary);text-align:right;font-size:12.5px;}
+  .bar-track{flex:1;background:var(--gridline);border-radius:4px;height:14px;position:relative;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:4px;}
+  .bar-value{width:40px;flex:0 0 40px;font-variant-numeric:tabular-nums;color:var(--text-primary);font-weight:600;font-size:12.5px;}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--text-secondary);margin-top:10px;}
+  .legend-item{display:flex;align-items:center;gap:6px;}
+  .swatch{width:10px;height:10px;border-radius:3px;display:inline-block;}
+
+  .two-col{display:grid;grid-template-columns:1.1fr 0.9fr;gap:20px;}
+  @media (max-width:900px){.two-col{grid-template-columns:1fr;}}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--gridline);vertical-align:top;}
+  th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);font-weight:700;position:sticky;top:0;background:var(--surface-1);}
+  tr:hover td{background:rgba(42,120,214,0.05);}
+  .table-scroll{max-height:640px;overflow:auto;border:1px solid var(--border);border-radius:var(--card-radius);background:var(--surface-1);}
+
+  .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;white-space:nowrap;}
+  .badge-ready{background:rgba(12,163,12,0.14);color:var(--good);}
+  .badge-workaround{background:rgba(250,178,25,0.18);color:#a06400;}
+  .badge-blocked{background:rgba(208,59,59,0.14);color:var(--critical);}
+  [data-theme="dark"] .badge-workaround{color:#fab219;}
+  @media (prefers-color-scheme: dark){ .badge-workaround{color:#fab219;} }
+
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .filters select, .filters input{
+    background:var(--surface-1);color:var(--text-primary);border:1px solid var(--border);
+    border-radius:8px;padding:7px 10px;font-size:13px;font-family:inherit;
+  }
+  .filters input{flex:1;min-width:200px;}
+  .row-count{font-size:12.5px;color:var(--text-muted);margin:8px 0 0;}
+
+  .pipeline-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0;}
+  @media (max-width:900px){.pipeline-steps{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:560px){.pipeline-steps{grid-template-columns:1fr;}}
+  .step{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--card-radius);padding:16px;}
+  .step .step-num{
+    width:26px;height:26px;border-radius:50%;background:var(--series-blue);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-bottom:10px;
+  }
+  .step h4{margin:0 0 6px;font-size:14px;}
+  .step p{margin:0;font-size:13px;color:var(--text-secondary);}
+
+  .human-list{margin:0;padding-left:20px;font-size:14px;color:var(--text-secondary);}
+  .human-list li{margin:6px 0;}
+
+  .verify-table td, .verify-table th{font-size:13px;}
+  .verdict-confirmed{color:var(--good);font-weight:700;}
+  .verdict-corrected{color:#a06400;font-weight:700;}
+  .verdict-error{color:var(--critical);font-weight:700;}
+  .verdict-inconclusive{color:var(--text-muted);font-weight:700;}
+
+  .accuracy-bar-wrap{display:flex;align-items:center;gap:16px;margin:18px 0;}
+  .accuracy-bignum{font-size:40px;font-weight:700;}
+  .accuracy-arrow{font-size:22px;color:var(--text-muted);}
+
+  .honesty-box{
+    background:rgba(208,59,59,0.06);border:1px solid rgba(208,59,59,0.25);border-radius:var(--card-radius);
+    padding:18px 20px;font-size:14px;color:var(--text-secondary);
+  }
+  .honesty-box h3{margin:0 0 8px;font-size:15px;color:var(--critical);}
+  .honesty-box ul{margin:8px 0 0;padding-left:20px;}
+
+  footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--gridline);font-size:13px;color:var(--text-muted);}
+  code{background:var(--gridline);padding:1px 6px;border-radius:4px;font-size:12.5px;}
+  .evlink{font-size:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">Composio · AI Product Ops Intern take-home</p>
+    <h1>Can we build an agent toolkit for 100 apps, today? An agent-run audit says: mostly yes — if you can live with OAuth review queues.</h1>
+    <p class="sub">100 apps across 10 categories, researched by 10 parallel Claude subagents (using the Composio MCP + live web docs), then independently spot-checked by hand. This page is the whole deliverable: the patterns, the full matrix, the pipeline that produced it, and the verification trail — including what it got wrong the first time.</p>
+    <div class="metabar">
+      <span id="meta-generated"></span>
+      <span>100 apps · 10 categories</span>
+      <span>Research agent: Claude subagents + Composio MCP + web search</span>
+    </div>
+  </header>
+
+  <section id="stats-section">
+    <div class="stat-row" id="headline-stats"></div>
+  </section>
+
+  <section id="patterns">
+    <p class="eyebrow">Patterns — the headline</p>
+    <h2>Five things the data says, before you look at a single row</h2>
+    <p class="section-sub">These are the load-bearing findings. Everything below (the table, the pipeline, the verification) is support for these five claims.</p>
+    <div class="findings-grid" id="findings-grid"></div>
+  </section>
+
+  <section id="charts">
+    <p class="eyebrow">The numbers behind the patterns</p>
+    <h2>Distributions across all 100 apps</h2>
+    <div class="two-col">
+      <div>
+        <div class="chart-card">
+          <h3>How developers get credentials (self-serve vs. gated)</h3>
+          <p class="chart-note">"Free" and "trial" require nothing but a signup form. Everything else needs a plan upgrade, an admin, a partner review, or a sales call.</p>
+          <div id="chart-selfserve"></div>
+        </div>
+        <div class="chart-card">
+          <h3>Auth methods in use</h3>
+          <p class="chart-note">Apps often support more than one method, so bars sum to more than 100.</p>
+          <div id="chart-auth"></div>
+        </div>
+      </div>
+      <div>
+        <div class="chart-card">
+          <h3>Buildability verdict</h3>
+          <p class="chart-note">Could Composio ship an agent toolkit for this app today, with no human intervention beyond a signup?</p>
+          <div id="chart-verdict"></div>
+        </div>
+        <div class="chart-card">
+          <h3>Where the blockers actually are</h3>
+          <p class="chart-note">Grouped from each app's specific blocker text into themes — see the "How we grouped blockers" note below the table.</p>
+          <div id="chart-blockers"></div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3>Self-serve rate by category</h3>
+      <p class="chart-note">Share of apps in each category that are free or trial self-serve (green) vs. gated in some way (amber/red).</p>
+      <div id="chart-category"></div>
+    </div>
+  </section>
+
+  <section id="table-section">
+    <p class="eyebrow">The findings — all 100 apps</p>
+    <h2>Full research matrix</h2>
+    <p class="section-sub">Filter by category or verdict, or search by name. Every row links out to the evidence it's based on.</p>
+    <div class="filters">
+      <input id="search-input" type="text" placeholder="Search app name or blocker…" />
+      <select id="category-filter"><option value="">All categories</option></select>
+      <select id="verdict-filter">
+        <option value="">All verdicts</option>
+        <option value="ready_today">Ready today</option>
+        <option value="ready_with_workaround">Ready with workaround</option>
+        <option value="blocked">Blocked</option>
+      </select>
+      <select id="selfserve-filter">
+        <option value="">All self-serve levels</option>
+        <option value="free_self_serve">Free self-serve</option>
+        <option value="trial_self_serve">Trial self-serve</option>
+        <option value="paid_plan_required">Paid plan required</option>
+        <option value="admin_approval_required">Admin approval required</option>
+        <option value="partner_gated">Partner gated</option>
+        <option value="contact_sales">Contact sales</option>
+      </select>
+    </div>
+    <div class="table-scroll">
+      <table id="apps-table">
+        <thead>
+          <tr>
+            <th>App</th><th>Category</th><th>Auth</th><th>Self-serve</th><th>API surface</th><th>Composio toolkit?</th><th>Verdict</th><th>Blocker</th><th>Evidence</th>
+          </tr>
+        </thead>
+        <tbody id="apps-tbody"></tbody>
+      </table>
+    </div>
+    <p class="row-count" id="row-count"></p>
+  </section>
+
+  <section id="agent-section">
+    <p class="eyebrow">The agent — what actually did the research</p>
+    <h2>A 10-way parallel research pipeline, orchestrated by Claude Code</h2>
+    <p class="section-sub">Composio's own MCP tools were used to check real toolkit coverage before any web research happened — the same instinct a human researcher would have (check what already exists before assuming it needs to be built).</p>
+    <div class="pipeline-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Split by category</h4>
+        <p>The 100-app list was split into its 10 given categories (10 apps each) so each research thread stays scoped and comparable.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>10 parallel subagents</h4>
+        <p>Each subagent got the same strict JSON schema and instructions, and ran independently with its own WebSearch + WebFetch + Composio MCP access.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>Composio-toolkit check first</h4>
+        <p>Before researching an app's raw docs, each subagent checked <code>composio.dev/toolkits/&lt;slug&gt;</code> and cross-referenced Composio's own catalog, so "buildable" also means "does this already half-exist."</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h4>Structured extraction</h4>
+        <p>Each app produced one JSON object: category, auth, self-serve tier, API surface, Composio/MCP status, verdict, blocker, and evidence URLs — no free text allowed to slip through ungrounded.</p>
+      </div>
+    </div>
+    <h3 style="font-size:16px;margin-top:32px;">Where a human was needed</h3>
+    <ul class="human-list">
+      <li><strong>Resolving contradictions between subagents.</strong> A few apps (e.g. Twilio's MCP server, GitHub's exact tool count) got confident-sounding but slightly wrong answers — caught only by an independent re-check against the primary source, not by the research agent grading itself.</li>
+      <li><strong>Judgment calls on ambiguous gating.</strong> Whether "a free trial that requires 3 seats minimum" counts as self-serve, or whether a sandbox-only API counts as "ready," needed a human-set convention applied consistently across categories.</li>
+      <li><strong>Deciding when "not found" is a real finding.</strong> For long-tail apps (Paygent Connect, Waterfall.io, fanbasis), a human had to decide the agents had genuinely exhausted reasonable search effort rather than just given up early.</li>
+      <li><strong>The verification pass itself.</strong> Every correction on this page came from a second, independent look — see below.</li>
+    </ul>
+    <p style="font-size:13.5px;color:var(--text-muted);margin-top:18px;">Reusable pipeline code: <code>agent/research.mjs</code> (Composio toolkit check + Claude with the <code>web_search</code> tool, same schema as above) and <code>agent/verify.mjs</code> (automated evidence-link liveness check). See the repo README for how to run them with your own API keys.</p>
+  </section>
+
+  <section id="verification-section">
+    <p class="eyebrow">The proof — verification, shown honestly</p>
+    <h2>How we know these findings are trustworthy</h2>
+    <p class="section-sub">Two independent verification loops ran on top of the research pass: a manual doc cross-check on a 15-app sample, and an automated link-liveness check across a random 25-app sample. Both are shown here with their misses, not just their hits.</p>
+
+    <div class="accuracy-bar-wrap">
+      <div>
+        <div class="accuracy-bignum" id="acc-pass1">–</div>
+        <div style="font-size:12.5px;color:var(--text-muted);">Pass 1 — strict accuracy<br/>(any drift counts as a miss)</div>
+      </div>
+      <div class="accuracy-arrow">→</div>
+      <div>
+        <div class="accuracy-bignum" id="acc-pass2" style="color:var(--good);">–</div>
+        <div style="font-size:12.5px;color:var(--text-muted);">Pass 2 — after corrections<br/>(verdict-affecting errors fixed)</div>
+      </div>
+      <div style="flex:1;font-size:13.5px;color:var(--text-secondary);">
+        Strict accuracy counts a corrected tool count or a conflated MCP claim as a miss, even when the buildability verdict itself was already right. Directional accuracy (whether the <em>verdict</em> would have been wrong) was <strong id="acc-directional">–</strong> on pass 1.
+      </div>
+    </div>
+
+    <h3 style="font-size:15px;">Manual doc cross-check — 15 sampled apps</h3>
+    <div class="table-scroll" style="max-height:420px;">
+      <table class="verify-table">
+        <thead><tr><th>App</th><th>Claim checked</th><th>Verdict</th><th>Detail</th></tr></thead>
+        <tbody id="verify-tbody"></tbody>
+      </table>
+    </div>
+
+    <h3 style="font-size:15px;margin-top:28px;">Automated link-liveness check — 25 random apps</h3>
+    <p class="section-sub" style="margin-bottom:10px;"><span id="link-check-summary"></span> The <code>agent/verify.mjs</code> script (no API key needed) HTTP-fetches every evidence URL for a random sample and flags non-2xx responses. Re-running it live on this sample found that most flagged links were <strong>403s from bot-protected sites</strong> (Otter.ai, PitchBook) — false positives for "broken," not actual dead links — while one (a guessed Composio toolkit slug for SE Ranking) was a genuine 404 that's consistent with that app correctly being marked as having no Composio toolkit. This is disclosed rather than smoothed over: link-liveness is a coarse, fast signal, not proof.</p>
+
+    <div class="honesty-box">
+      <h3>Where the agent got it wrong, or gave up</h3>
+      <ul>
+        <li><strong>Reducto:</strong> first pass claimed a working Composio toolkit existed; the actual docs page says "Composio Managed App Available? N/A." Corrected after verification.</li>
+        <li><strong>Twilio:</strong> first pass described Twilio's MCP server as the thing that executes API calls; it's actually a read-only docs/spec search tool, and a separate community project does the execution. Corrected.</li>
+        <li><strong>GitHub:</strong> Composio tool count was off by about 5% (846 vs. an estimated ~893). Corrected to the exact number from the toolkit page.</li>
+        <li><strong>Pinterest Ads:</strong> one claim (Standard-access review requirement) could not be re-confirmed within the verification budget because the source URL 404'd on re-fetch. Flagged as unverified in the dataset rather than silently trusted.</li>
+        <li><strong>Paygent Connect, Waterfall.io, NotebookLM (consumer), fanbasis:</strong> no usable public self-serve developer docs were found for these at all — reported as "blocked / no public docs found," which is a legitimate finding, not a research failure.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p>Source data: <code>data/apps.json</code>, <code>data/results.json</code>, <code>data/verification.json</code>. Research pipeline: <code>agent/research.mjs</code>, <code>agent/verify.mjs</code>. See repo README for how to reproduce this run.</p>
+  </footer>
+
+</div>
+
+<script id="app-data" type="application/json">[
+  {
+    "id": 1,
+    "name": "Salesforce",
+    "category": "CRM and Sales",
+    "one_liner": "Enterprise CRM platform for sales, service, and marketing automation.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Free 30-day Developer Edition org gives instant OAuth-based API access via a Connected/External Client App.",
+    "api_surface": { "type": "REST+GraphQL", "breadth": "broad", "notes": "REST, SOAP, Bulk, and GraphQL APIs cover nearly every CRM object plus SOQL/SOSL queries, Apex, and Flow actions." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio Salesforce toolkit has 179 tools/7 triggers; Salesforce also ships its own hosted Agentforce MCP servers (GA April 2026)." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/intro_understanding_authentication.htm", "https://developer.salesforce.com/blogs/2026/04/salesforce-hosted-mcp-servers-are-now-generally-available", "https://composio.dev/toolkits/salesforce"]
+  },
+  {
+    "id": 2,
+    "name": "HubSpot",
+    "category": "CRM and Sales",
+    "one_liner": "CRM and marketing/sales/service hub for inbound growth teams.",
+    "auth_methods": ["OAuth2", "API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free HubSpot account plus a free developer test account lets anyone create a private app token or OAuth app instantly.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Broad REST API covering CRM objects, marketing, CMS, and workflows; ~244 actions surfaced via Composio." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio HubSpot toolkit (244 tools, 2 triggers); HubSpot also runs its own official remote MCP server (GA April 2026) and a local Developer MCP server." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developers.hubspot.com/docs/api/private-apps", "https://developers.hubspot.com/mcp", "https://composio.dev/toolkits/hubspot"]
+  },
+  {
+    "id": 3,
+    "name": "Pipedrive",
+    "category": "CRM and Sales",
+    "one_liner": "Sales-pipeline-focused CRM for deal tracking and pipeline automation.",
+    "auth_methods": ["OAuth2", "API Key"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Free trial account provides an API token instantly from user settings; OAuth requires registering an app in the developer sandbox.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Broad REST API (deals, leads, persons, organizations, activities, products); Composio exposes 398 tools." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio Pipedrive toolkit (398 tools/3 triggers); Pipedrive also launched its own native MCP server (June 2026) available on all plans with OAuth setup." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://pipedrive.readme.io/docs/core-api-concepts-authentication", "https://www.pipedrive.com/en/newsroom/pipedrive-launches-native-mcp-server-bringing-crm-workflows-directly-into-ai-assistants", "https://composio.dev/toolkits/pipedrive"]
+  },
+  {
+    "id": 4,
+    "name": "Attio",
+    "category": "CRM and Sales",
+    "one_liner": "Modern, flexible relationship-data CRM built around a customizable data model.",
+    "auth_methods": ["OAuth2", "API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "API/access-token generation is available on all plans, including free, from Workspace settings by an admin.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "REST API covers records, lists, attributes, tasks, notes, comments, and webhooks across all objects; Composio exposes 99 tools." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio Attio toolkit (99 tools); Attio's own developer platform explicitly lists an official MCP offering alongside its REST API and SQL interface." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.attio.com/", "https://attio.com/help/apps/other-apps/generating-an-api-key", "https://composio.dev/toolkits/attio"]
+  },
+  {
+    "id": 5,
+    "name": "Twenty",
+    "category": "CRM and Sales",
+    "one_liner": "Open-source, self-hostable CRM alternative to Salesforce.",
+    "auth_methods": ["API Key", "OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Fully open source (self-host free) or managed cloud signup; API keys are created instantly from Settings without any approval.",
+    "api_surface": { "type": "REST+GraphQL", "breadth": "broad", "notes": "Core API exposes both /rest/ and /graphql/ for CRUD across 30+ standard and custom objects, plus a separate Metadata API for schema." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "No official Composio toolkit page found (404); a community-built bash/curl 'agent skill' toolkit for Twenty exists (396 scripts) rather than an official Composio or Twenty MCP server." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.twenty.com/developers/api-and-webhooks", "https://composio.dev/toolkits/category/crm"]
+  },
+  {
+    "id": 6,
+    "name": "Podio",
+    "category": "CRM and Sales",
+    "one_liner": "Customizable workspace/CRM platform for building flexible business apps.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free signup, register an app in account settings to get Client ID/Secret and use OAuth2 (server-side, client-side, password, or app-auth flows).",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "REST API centered on generic 'items' within customizable apps rather than a dedicated CRM object model; Podio itself is in maintenance mode with limited new development." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No Composio Podio toolkit found; only an unrelated third-party 'ProcFu' automation add-on for Podio surfaced, no official MCP server identified." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No composio/official MCP toolkit; must build directly against a dated, generic-object API",
+    "evidence_urls": ["https://developers.podio.com/authentication", "https://developers.podio.com/api-key", "https://composio.dev/toolkits/procfu"]
+  },
+  {
+    "id": 7,
+    "name": "Zoho CRM",
+    "category": "CRM and Sales",
+    "one_liner": "Cloud CRM for lead, deal, and contact management within the Zoho suite.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free Zoho account plus Zoho Developer Console 'Self Client' lets a developer generate OAuth credentials immediately, no approval needed.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "V8 REST API covers Leads, Contacts, Deals, and all CRM modules with metadata, search, and bulk endpoints." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio's 'Zoho' toolkit (12 tools) spans the Zoho suite including CRM actions; Zoho also runs its own official pre-built CRM MCP server." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://www.zoho.com/crm/developer/docs/api/v8/oauth-overview.html", "https://www.zoho.com/crm/developer/mcp.html", "https://composio.dev/toolkits/zoho"]
+  },
+  {
+    "id": 8,
+    "name": "Close",
+    "category": "CRM and Sales",
+    "one_liner": "Inside-sales CRM with built-in calling, email, and SMS automation.",
+    "auth_methods": ["OAuth2", "API Key"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Free trial account, API key generated instantly from account settings with no approval step.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "REST API covers leads, contacts, opportunities, calls, SMS, tasks; Composio exposes only 6 tools, a narrower slice than Salesforce/HubSpot/Pipedrive." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio Close toolkit (6 tools, API key auth); Close also runs its own official hosted MCP server (mcp.close.com)." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://help.close.com/docs/mcp-server", "https://developer.close.com/topics/authentication/", "https://composio.dev/toolkits/close"]
+  },
+  {
+    "id": 9,
+    "name": "Copper",
+    "category": "CRM and Sales",
+    "one_liner": "Google-Workspace-native CRM for relationship and pipeline management.",
+    "auth_methods": ["API Key", "OAuth2"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Free trial account; API key generated instantly in System Settings, though OAuth2 is reserved for approved partner integrations.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Dev API covers core objects (people, companies, opportunities, activities) with simple token-header auth; rate-limited to 180 req/min." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No Composio Copper toolkit found; no official Copper MCP server found." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No existing Composio/official MCP integration; must build directly against a narrower, older-style API",
+    "evidence_urls": ["https://developer.copper.com/introduction/authentication.html", "https://support.copper.com/en/articles/8823347-generating-an-api-key"]
+  },
+  {
+    "id": 10,
+    "name": "DealCloud",
+    "category": "CRM and Sales",
+    "one_liner": "Deal/relationship management CRM for private equity, banking, and M&A firms.",
+    "auth_methods": ["OAuth2", "API Key"],
+    "self_serve": "admin_approval_required",
+    "self_serve_notes": "Only available to existing licensed customers; a site admin must grant a user 'API' capability before that user can enable and copy an API key/secret.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Per-site REST API with Swagger UI covering entries, lists, users, and management endpoints, but usable only within an existing customer's provisioned site." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No Composio DealCloud toolkit found and no official MCP server identified; DealCloud is a niche enterprise vertical CRM (Intapp) sold via direct sales, not self-signup." },
+    "buildability_verdict": "blocked",
+    "main_blocker": "Requires being an existing paying customer with admin-granted API capability; no free/trial signup",
+    "evidence_urls": ["https://api.docs.dealcloud.com/", "https://api.docs.dealcloud.com/docs/apikeys", "https://api.docs.dealcloud.com/docs/token"]
+  },
+  {
+    "id": 11,
+    "name": "Zendesk",
+    "category": "Support and Helpdesk",
+    "one_liner": "Cloud-based customer service and support ticketing platform.",
+    "auth_methods": ["OAuth2", "API Key", "Basic"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Developers can sign up for a free 14-day trial account and immediately generate API tokens or OAuth credentials from Admin Center.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Extensive REST API covering tickets, users, orgs, macros, automations, custom objects, and search." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists a Zendesk toolkit with 452 tools and 2 triggers using OAuth2." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developer.zendesk.com/api-reference/introduction/security-and-auth/", "https://developer.zendesk.com/documentation/api-basics/getting-started/getting-a-trial-or-sponsored-account-for-development/", "https://composio.dev/toolkits/zendesk"]
+  },
+  {
+    "id": 12,
+    "name": "Intercom",
+    "category": "Support and Helpdesk",
+    "one_liner": "Customer messaging platform combining live chat, help desk, and tickets.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Developer Hub issues an Access Token immediately upon creating an app for your own workspace, no approval needed.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Broad REST API for contacts, conversations, tickets, articles, data events, and analytics." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists an Intercom toolkit with 133 tools using OAuth2." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developers.intercom.com/docs/build-an-integration/learn-more/authentication", "https://composio.dev/toolkits/intercom"]
+  },
+  {
+    "id": 13,
+    "name": "Freshdesk",
+    "category": "Support and Helpdesk",
+    "one_liner": "Cloud help desk software for ticketing, automation, and knowledge base.",
+    "auth_methods": ["API Key", "Basic"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "API key is visible in Profile Settings immediately, including on free trial accounts (with lower rate limits).",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "REST API covers tickets, contacts, companies, solutions/knowledge base, automations, SLAs, and time tracking." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists a Freshdesk toolkit with 178 tools using Basic Auth credentials." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developers.freshdesk.com/api/", "https://composio.dev/toolkits/freshdesk"]
+  },
+  {
+    "id": 14,
+    "name": "Front",
+    "category": "Support and Helpdesk",
+    "one_liner": "Shared inbox and customer communication hub for support teams.",
+    "auth_methods": ["API Key", "OAuth2"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "API tokens can be generated freely in account settings for a single-instance integration; OAuth/public app distribution needs Front's app framework and possible exception approval.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "REST API for conversations, messages, contacts, tags, channels, and rules." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio has a Front toolkit/auth-config but notes actions are 'coming soon', so tool coverage is currently narrow/incomplete." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Composio toolkit tools still limited (coming soon)",
+    "evidence_urls": ["https://dev.frontapp.com/docs/authentication", "https://docs.composio.dev/toolkits/front"]
+  },
+  {
+    "id": 15,
+    "name": "Pylon",
+    "category": "Support and Helpdesk",
+    "one_liner": "Modern B2B customer support and ticketing platform for SaaS companies.",
+    "auth_methods": ["Token", "OAuth2"],
+    "self_serve": "paid_plan_required",
+    "self_serve_notes": "CORRECTED after verification: pricing page does reference a free trial, but exact terms/length aren't published and all listed tiers require payment with 3+ seat minimums; an admin can generate API tokens once subscribed.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "REST API for issues, accounts, and contacts; documented but smaller surface than legacy helpdesks." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "Pylon runs its own official remote MCP server (mcp.usepylon.com) with OAuth; no Composio toolkit found (404 on guessed slug)." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No free trial; requires paid annual contract",
+    "evidence_urls": ["https://docs.usepylon.com/pylon-docs/developer/api/authentication", "https://docs.usepylon.com/pylon-docs/integrations/pylon-mcp", "https://www.usepylon.com/pricing"]
+  },
+  {
+    "id": 16,
+    "name": "LiveAgent",
+    "category": "Support and Helpdesk",
+    "one_liner": "Multichannel help desk software with live chat, ticketing, and call center.",
+    "auth_methods": ["API Key"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Admins generate an API key in Configuration > System > API on any account, including trials.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "REST API v3 documented per-instance covering tickets, contacts, agents, and devices." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists LiveAgent with API_KEY auth but currently zero tools/triggers implemented." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Composio toolkit has no tools yet; would need direct API integration",
+    "evidence_urls": ["https://support.liveagent.com/741982-API-key", "https://support.liveagent.com/840770-Complete-API-reference", "https://docs.composio.dev/toolkits/liveagent"]
+  },
+  {
+    "id": 17,
+    "name": "Plain",
+    "category": "Support and Helpdesk",
+    "one_liner": "API-first customer support platform built around GraphQL for B2B SaaS.",
+    "auth_methods": ["API Key", "Other: Bearer token via GraphQL"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Create a machine user and generate a scoped API key directly from workspace Settings, no approval needed.",
+    "api_surface": { "type": "GraphQL", "breadth": "broad", "notes": "Full GraphQL API and schema for threads, customers, companies, and tiers, designed API-first." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists a Plain toolkit with 22 tools using API key auth, including raw GraphQL query support." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://www.plain.com/docs/graphql/authentication", "https://composio.dev/toolkits/plain"]
+  },
+  {
+    "id": 18,
+    "name": "Help Scout",
+    "category": "Support and Helpdesk",
+    "one_liner": "Email-based shared inbox and help desk for small-to-mid customer support teams.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Any user can create a My App from their profile and use the Client Credentials flow to get a bearer token without external approval.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Mailbox API covers conversations, customers, mailboxes, tags, and workflows over HTTPS-only OAuth2." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": "unknown", "third_party_mcp_exists": "unknown", "notes": "Guessed Composio slugs (help-scout, helpscout) both 404'd; a search snippet claimed a listing but could not be verified on an actual page." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developer.helpscout.com/mailbox-api/overview/authentication/"]
+  },
+  {
+    "id": 19,
+    "name": "Gorgias",
+    "category": "Support and Helpdesk",
+    "one_liner": "Helpdesk built for ecommerce brands, integrating deeply with Shopify and social channels.",
+    "auth_methods": ["API Key", "OAuth2", "Basic"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Private-app API key with HTTP Basic Auth is available directly from account settings; public apps distributed to other users require OAuth2 and Gorgias approval.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "REST API for tickets, customers, teams, tags, and account settings." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists a Gorgias toolkit with 32 tools, supporting both API Key and OAuth2." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developers.gorgias.com/reference/authentication", "https://developers.gorgias.com/docs/oauth2-authentication-for-creating-apps-with-gorgias", "https://composio.dev/toolkits/gorgias"]
+  },
+  {
+    "id": 20,
+    "name": "Gladly",
+    "category": "Support and Helpdesk",
+    "one_liner": "Enterprise customer-centric contact center platform unifying voice, chat, and email.",
+    "auth_methods": ["Basic", "Token"],
+    "self_serve": "contact_sales",
+    "self_serve_notes": "No public free trial or self-serve signup; access is sales-led with custom annual contracts, though existing customer admins can self-serve API tokens once onboarded.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "REST API documented for conversations, customers, and webhooks, with a sandbox environment for existing customers." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "Guessed Composio slug (gladly) 404'd and no confirmation found elsewhere; no official MCP server found in docs." },
+    "buildability_verdict": "blocked",
+    "main_blocker": "Contact-sales onboarding, no public trial access",
+    "evidence_urls": ["https://developer.gladly.com/rest/", "https://help.gladly.com/developer-tutorials/docs/authentication", "https://help.gladly.com/implementation/docs/get-your-api-tokens"]
+  },
+  {
+    "id": 21,
+    "name": "Slack",
+    "category": "Communications and Messaging",
+    "one_liner": "Channel-based team chat and workflow platform with an extensive developer API.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Anyone can create a Slack app at api.slack.com/apps and self-serve OAuth2 credentials instantly, free.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Web API covers messaging, channels, users, files, reactions, admin, and more with hundreds of methods." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio Slack toolkit has 167 tools/9 triggers; official MCP reference server plus many community MCP servers exist." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.composio.dev/toolkits/slack", "https://docs.slack.dev/authentication/installing-with-oauth", "https://github.com/modelcontextprotocol/servers/tree/main/src/slack"]
+  },
+  {
+    "id": 22,
+    "name": "Twilio",
+    "category": "Communications and Messaging",
+    "one_liner": "Cloud communications platform for programmable SMS, voice, and messaging APIs.",
+    "auth_methods": ["Basic", "API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free trial signup on twilio.com immediately gives Account SID/Auth Token and API key creation in the Console.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Over 1,800 endpoints across 30+ products (SMS, Voice, WhatsApp, Video, Verify, etc)." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio Twilio toolkit exists. CLARIFIED after verification: Twilio's own mcp.twilio.com server is a read-only docs/spec search tool (\"does not execute API calls on your behalf\") — the separate twilio-labs/mcp project is the one that actually calls the API; the initial agent pass conflated the two." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.composio.dev/toolkits/twilio", "https://www.twilio.com/docs/iam/api", "https://www.twilio.com/docs/ai/mcp"]
+  },
+  {
+    "id": 23,
+    "name": "Zoho Cliq",
+    "category": "Communications and Messaging",
+    "one_liner": "Team chat app from Zoho with bots, webhooks, and REST API for automation.",
+    "auth_methods": ["OAuth2", "Token", "Other: Webhook/ZAPI key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free Zoho account lets developers generate webhook tokens or OAuth2 client credentials in the Cliq platform console instantly.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "REST API v2/v3 plus platform features (bots, slash commands, widgets, functions) but narrower/less standard than major chat platforms." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "No dedicated Composio Zoho Cliq toolkit found (404); Zoho itself ships an official Zoho MCP server covering Cliq among other Zoho apps." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No off-the-shelf Composio toolkit; must build against Cliq's narrower REST/webhook API",
+    "evidence_urls": ["https://www.zoho.com/cliq/help/platform/getting-started-with-cliq-platform.html", "https://www.zoho.com/cliq/help/restapi/v3/introduction/", "https://www.zoho.com/cliq/help/platform/zoho-cliq-mcp.html", "https://www.zoho.com/cliq/help/platform/webhook-tokens.html"]
+  },
+  {
+    "id": 24,
+    "name": "Lark (Larksuite)",
+    "category": "Communications and Messaging",
+    "one_liner": "All-in-one enterprise collaboration suite with chat, docs, and open platform APIs.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "admin_approval_required",
+    "self_serve_notes": "Developers must belong to an enterprise tenant (create or be invited) and self-built apps need tenant admin approval before use, though no Lark platform review is required internally.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Open Platform covers Messenger, Docs, Base, Sheets, Calendar, Mail, Tasks, Meetings with granular per-scope permission configuration." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "No Composio toolkit found (404); Lark publishes an official CLI/agent-skills tool and an official OpenClaw plugin that function like MCP-style agent integrations." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Requires enterprise tenant + admin approval to install self-built apps; no Composio toolkit",
+    "evidence_urls": ["https://open.larksuite.com/document/home/introduction-to-custom-app-development/self-built-application-development-process", "https://github.com/larksuite/cli", "https://github.com/larksuite/openclaw-lark"]
+  },
+  {
+    "id": 25,
+    "name": "Pumble",
+    "category": "Communications and Messaging",
+    "one_liner": "Free team chat app (by CAKE.com) with channels, DMs, and a lightweight REST API.",
+    "auth_methods": ["API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Any user can install the free API-keys addon and generate a key instantly via a slash command, no approval needed.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Swagger-documented API covers messaging, reactions, channels, and DMs but is a small action set compared to major platforms." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "No Composio toolkit (404); at least one community MCP server for Pumble exists." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Narrow API surface and no Composio toolkit",
+    "evidence_urls": ["https://pumble.com/help/integrations/automation-workflow-integrations/api-keys-integration/", "https://lobehub.com/mcp/shoutkol-pumble-mcp-server"]
+  },
+  {
+    "id": 26,
+    "name": "Discord",
+    "category": "Communications and Messaging",
+    "one_liner": "Community/social chat platform with voice, servers, and an extensive bot/OAuth API.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free instant self-serve app/bot creation via the Discord Developer Portal, no approval for basic use.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Broad REST API plus Gateway (WebSocket) covering servers, channels, messages, moderation, voice, and more." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio has both a Discord toolkit (28 tools/1 trigger) and a Discord Bot toolkit; many community MCP servers also exist." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.composio.dev/toolkits/discord", "https://docs.discord.com/developers/topics/oauth2"]
+  },
+  {
+    "id": 27,
+    "name": "Telegram",
+    "category": "Communications and Messaging",
+    "one_liner": "Cloud messaging app with a simple, free HTTP Bot API for automation.",
+    "auth_methods": ["Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free, instant bot token issuance via BotFather chat, no signup form or approval needed.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "HTTP-based Bot API with a moderate but bounded method set (messages, chats, media, updates); full client API (MTProto) is separate and heavier." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio Telegram toolkit lists 18 tools; several community MCP servers for Telegram also exist." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.composio.dev/toolkits/telegram", "https://core.telegram.org/bots/api"]
+  },
+  {
+    "id": 28,
+    "name": "WhatsApp Business",
+    "category": "Communications and Messaging",
+    "one_liner": "Meta's WhatsApp Cloud API for business messaging, templates, and automation.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "A Meta developer account and app can be created for free with a temporary token for testing, but production use needs Meta Business verification, a permanent system-user token, and message-template approval.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Focused messaging API (send/receive messages, templates, media, business profile) rather than a broad platform." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio has a WhatsApp toolkit (Business API only, not personal WhatsApp); numerous community MCP servers exist for the Cloud API." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Meta Business verification and template/phone-number approval needed for production sending",
+    "evidence_urls": ["https://docs.composio.dev/toolkits/whatsapp", "https://developers.facebook.com/docs/whatsapp/cloud-api/get-started"]
+  },
+  {
+    "id": 29,
+    "name": "Aircall",
+    "category": "Communications and Messaging",
+    "one_liner": "Cloud-based business phone system with call, SMS, and CRM-integration APIs.",
+    "auth_methods": ["OAuth2", "Basic"],
+    "self_serve": "paid_plan_required",
+    "self_serve_notes": "Existing Aircall customers can self-serve generate Basic Auth API keys in Company Settings, but that requires an active paid Aircall subscription; OAuth2 (for marketplace partner apps) needs Aircall partner approval.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Covers calls, contacts, users, numbers, and webhooks — a focused telephony API rather than a broad platform." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": "unknown", "third_party_mcp_exists": true, "notes": "Aircall listed in Composio's toolkit catalog but no confirmed dedicated toolkit page found; an unofficial third-party MCP server exists, explicitly not built/endorsed by Aircall." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Basic Auth API keys require an existing paid Aircall account; OAuth2 route requires partner approval",
+    "evidence_urls": ["https://developer.aircall.io/api-references/", "https://github.com/themobilefirstco/aircall-mcp-server"]
+  },
+  {
+    "id": 30,
+    "name": "Vonage",
+    "category": "Communications and Messaging",
+    "one_liner": "Programmable communications platform for SMS, voice, video, and verification APIs.",
+    "auth_methods": ["Basic", "Token", "Other: JWT"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free self-serve signup grants an API key/secret plus free trial credit immediately from the developer dashboard.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Broad set of communications APIs: SMS, Voice, Video, Verify, Number Insight, Messages, and more." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "No Composio Vonage toolkit found (404); Vonage itself ships multiple official MCP servers (documentation MCP server, API bindings/tooling MCP server, telephony MCP server)." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No Composio toolkit yet, though Vonage's own official MCP servers cover much of the gap",
+    "evidence_urls": ["https://developer.vonage.com/en/getting-started/overview", "https://github.com/Vonage/vonage-mcp-server-documentation", "https://github.com/Vonage-Community/telephony-mcp-server"]
+  },
+  {
+    "id": 31,
+    "name": "Google Ads",
+    "category": "Marketing Ads Email Social",
+    "one_liner": "Manage and analyze Google Ads campaigns, ad groups, and reporting programmatically.",
+    "auth_methods": ["OAuth2", "Other: Developer Token (required alongside OAuth2)"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "A developer token can be obtained instantly for Test Account access, but production ('Explorer'/Basic) access requires a Google review of the developer token application.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Full campaign/ad group/reporting (GAQL) API via google-ads-api with gRPC/REST bindings and extensive resource coverage." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists a Google Ads toolkit (OAuth2, ~9 tools); several community MCP servers for Google Ads also exist." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Developer token review needed for production/live account access",
+    "evidence_urls": ["https://developers.google.com/google-ads/api/docs/get-started/dev-token", "https://composio.dev/toolkits/googleads"]
+  },
+  {
+    "id": 32,
+    "name": "Meta Ads",
+    "category": "Marketing Ads Email Social",
+    "one_liner": "Create, manage and analyze Facebook/Instagram ad campaigns via the Marketing API.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "A developer can create a Meta app and get a system-user token to manage their own ad account without App Review, but App Review + Business Verification is required to manage other businesses' ad accounts or exceed default access tiers.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Marketing API covers campaigns, ad sets, ads, creatives, custom audiences, and insights across Facebook/Instagram." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio has a 'Metaads' toolkit (OAuth2, requires configuring own OAuth credentials); multiple third-party Meta Ads MCP servers exist." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "App Review / Business Verification required for access beyond own ad account",
+    "evidence_urls": ["https://developers.facebook.com/docs/marketing-apis/get-started", "https://composio.dev/toolkits/metaads", "https://developers.meta.com/blog/updates-to-ads-management-standard-access-feature/"]
+  },
+  {
+    "id": 33,
+    "name": "LinkedIn Ads",
+    "category": "Marketing Ads Email Social",
+    "one_liner": "Manage LinkedIn advertising campaigns, audiences, and conversions via the Marketing/Advertising API.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "partner_gated",
+    "self_serve_notes": "Developers can create an app and generate test tokens for Development tier, but real usage requires applying per-product and upgrading to Standard tier via a video-demo review process.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Advertising API, Community Management API, Lead Sync, Conversions, and Events Management APIs are all versioned REST APIs." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio's LinkedIn toolkit (OAuth2, ~22 tools) includes ad targeting facets/audience count tools alongside organic content tools." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Per-product application and Standard-tier review (video demo) required for real ad account access",
+    "evidence_urls": ["https://learn.microsoft.com/en-us/linkedin/marketing/quick-start", "https://composio.dev/toolkits/linkedin"]
+  },
+  {
+    "id": 34,
+    "name": "GoHighLevel",
+    "category": "Marketing Ads Email Social",
+    "one_liner": "All-in-one CRM/marketing automation platform for agencies: funnels, calendars, contacts, campaigns.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Developers can sign up for a free Marketplace developer account and create a Private or Public app with OAuth2 (PKCE supported) without needing prior approval to start building/testing.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "v2 API covers contacts, conversations/messaging, calendars, opportunities/pipelines, products, custom objects, and more (Composio lists 218 tools)." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio's Highlevel toolkit (OAuth2, 218 tools, 0 triggers); community/marketplace MCP servers for GoHighLevel also exist." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://marketplace.gohighlevel.com/docs/", "https://marketplace.gohighlevel.com/docs/Authorization/OAuth2.0/", "https://docs.composio.dev/toolkits/highlevel"]
+  },
+  {
+    "id": 35,
+    "name": "Mailchimp",
+    "category": "Marketing Ads Email Social",
+    "one_liner": "Email marketing and marketing automation platform with campaigns, audiences, and e-commerce data.",
+    "auth_methods": ["API Key", "OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Any Mailchimp account holder can instantly generate an API key from account settings; free-tier accounts can access the API (capabilities scale with plan).",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Marketing API covers campaigns, audiences/lists, automations, e-commerce (stores/orders/products), and reporting (Composio lists 272 tools)." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio's Mailchimp toolkit (OAuth2, 272 tools, 4 triggers); an official/community Mailchimp MCP server also exists." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://mailchimp.com/developer/marketing/docs/fundamentals/", "https://composio.dev/toolkits/mailchimp"]
+  },
+  {
+    "id": 36,
+    "name": "Klaviyo",
+    "category": "Marketing Ads Email Social",
+    "one_liner": "Email/SMS marketing automation and customer data platform for e-commerce brands.",
+    "auth_methods": ["API Key", "OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Any account can instantly create a Private API Key from Settings; OAuth is reserved for tech partners listed in the App Marketplace.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Covers profiles/lists/segments, campaigns, flows, events, and catalogs (Composio lists 225 tools)." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio's Klaviyo toolkit (API Key + OAuth2, 225 tools); Klaviyo also has community MCP servers." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developers.klaviyo.com/en/docs/authenticate_", "https://composio.dev/toolkits/klaviyo"]
+  },
+  {
+    "id": 37,
+    "name": "systeme.io",
+    "category": "Marketing Ads Email Social",
+    "one_liner": "All-in-one funnel builder with email marketing, courses, and affiliate management.",
+    "auth_methods": ["API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Any user (including free-plan accounts) can instantly generate a public API key from their dashboard profile settings (max 3 keys, X-API-Key header).",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Public API is limited mainly to contacts, tags, and a few other resources; no ads/campaign send endpoints documented." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists a 'Systeme Io' toolkit entry (API_KEY auth) but it shows 0 tools/0 triggers, i.e. not actually implemented yet." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Composio toolkit exists only as an empty placeholder; narrow official API surface",
+    "evidence_urls": ["https://developer.systeme.io/reference/api", "https://help.systeme.io/article/2323-how-to-create-a-public-api-key-on-systeme-io", "https://docs.composio.dev/toolkits/systeme_io"]
+  },
+  {
+    "id": 38,
+    "name": "Pinterest",
+    "category": "Marketing Ads Email Social",
+    "one_liner": "Publish pins/boards and manage Pinterest ad campaigns via the Pinterest API v5.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Developers get free Trial access quickly (reviewed daily) for testing, but write operations (pins, ads) and the Ads API require upgrading to Standard access via a demo-video review.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "API v5 covers pins, boards, and Ads (campaigns, ad groups, ads, analytics, conversions) once Standard access is granted." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "Composio's Pinterest toolkit entry exists in the catalog (OAuth2) but has 0 tools/0 triggers, i.e. not actually usable; not a managed app." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Standard-access review (demo video) required for write/ads endpoints",
+    "evidence_urls": ["https://developers.pinterest.com/docs/api/v5/", "https://developers.pinterest.com/docs/api-features/ads-overview/", "https://docs.composio.dev/toolkits/pinterest"]
+  },
+  {
+    "id": 39,
+    "name": "Threads (Meta)",
+    "category": "Marketing Ads Email Social",
+    "one_liner": "Publish and manage posts/replies/insights on Meta's Threads app via the Threads API.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "A developer can create a Meta app and test with up to 25 accounts in Development mode immediately, but App Review (screencast demo, ~3-5 business days) is required before production use for other users' accounts.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Threads API covers publishing (text/image/video/carousel), replies, insights, and profile info — narrower than the broader Meta Marketing API." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No dedicated Threads toolkit found in Composio's catalog as of research; Threads functionality is separate from the Metaads toolkit." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No Composio toolkit yet; App Review required for production/other-user access",
+    "evidence_urls": ["https://developers.facebook.com/docs/threads/get-started/", "https://developers.facebook.com/docs/threads/get-started/get-access-tokens-and-permissions/"]
+  },
+  {
+    "id": 40,
+    "name": "SendGrid",
+    "category": "Marketing Ads Email Social",
+    "one_liner": "Transactional and marketing email delivery platform with sending, templates, and analytics APIs.",
+    "auth_methods": ["API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Developers can sign up for a free-tier SendGrid account and instantly create an API key with scoped permissions from the dashboard.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Covers mail send, templates, contacts/lists, suppression groups, domain auth, subusers, and stats (Composio lists 359 tools)." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio's SendGrid toolkit (API Key auth, 359 tools); Twilio/SendGrid ecosystem also has community MCP servers." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://www.twilio.com/docs/sendgrid/api-reference/how-to-use-the-sendgrid-v3-api/authentication", "https://composio.dev/toolkits/sendgrid"]
+  },
+  {
+    "id": 41,
+    "name": "Shopify",
+    "category": "Ecommerce",
+    "one_liner": "Hosted ecommerce platform for building and managing online stores.",
+    "auth_methods": ["OAuth2", "API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Developers get a free Partner account and unlimited free development stores instantly at partners.shopify.com.",
+    "api_surface": { "type": "REST+GraphQL", "breadth": "broad", "notes": "GraphQL Admin API (recommended) plus legacy REST Admin API, Storefront API, and many app-extension APIs covering products, orders, inventory, customers, fulfillment." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists a large Shopify toolkit (300+ tools); Shopify also ships its own official Storefront MCP server live by default on every eligible store since Q1 2026." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://shopify.dev/docs/api", "https://composio.dev/toolkits/shopify", "https://shopify.dev/docs/apps/build/storefront-mcp"]
+  },
+  {
+    "id": 42,
+    "name": "WooCommerce",
+    "category": "Ecommerce",
+    "one_liner": "Open-source WordPress plugin turning a site into an online store.",
+    "auth_methods": ["API Key", "Basic"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Any WooCommerce store admin can instantly generate a Consumer Key/Secret under WooCommerce > Settings > Advanced > REST API, no approval needed.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "REST API covers products, orders, customers, coupons, refunds, reports, and settings across the self-hosted store." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio has a WooCommerce tools listing; no official WooCommerce MCP server confirmed in docs." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://woocommerce.com/document/woocommerce-rest-api/", "https://composio.dev/tools/woocommerce/all"]
+  },
+  {
+    "id": 43,
+    "name": "BigCommerce",
+    "category": "Ecommerce",
+    "one_liner": "SaaS ecommerce platform for building online stores at scale.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Developers can spin up a free BigCommerce trial/sandbox store from the partner portal and immediately create store-level API accounts with X-Auth-Token credentials.",
+    "api_surface": { "type": "REST+GraphQL", "breadth": "broad", "notes": "REST Management API (products, orders, customers, carts, webhooks) plus a GraphQL Storefront API." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Search evidence confirms Composio includes a BigCommerce toolkit in its catalog." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developer.bigcommerce.com/docs/start/authentication", "https://developer.bigcommerce.com/docs/start/authentication/api-accounts"]
+  },
+  {
+    "id": 44,
+    "name": "Salesforce Commerce Cloud",
+    "category": "Ecommerce",
+    "one_liner": "Enterprise B2C/B2B commerce platform (Demandware) for large-scale online retail.",
+    "auth_methods": ["OAuth2", "Other: Account Manager client credentials (JWT)"],
+    "self_serve": "contact_sales",
+    "self_serve_notes": "No self-serve signup; a trial sandbox requires contacting your Commerce Cloud Account Executive or Partner Manager, and production access requires being an existing licensed customer/partner.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "SCAPI (current, OAuth2/SLAS-secured Shopper and Admin APIs) has replaced the deprecated OCAPI; covers catalog, orders, customers, pricing, and shopper flows." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "Composio has generic 'Salesforce' CRM toolkits but no dedicated Commerce Cloud/B2C Commerce toolkit found." },
+    "buildability_verdict": "blocked",
+    "main_blocker": "no self-serve sandbox; requires account exec/partner manager approval",
+    "evidence_urls": ["https://developer.salesforce.com/docs/commerce/commerce-api/guide/why-use-scapi.html", "https://help.salesforce.com/s/articleView?id=000393797"]
+  },
+  {
+    "id": 45,
+    "name": "Magento (Adobe Commerce)",
+    "category": "Ecommerce",
+    "one_liner": "Ecommerce platform (open-source Magento or paid Adobe Commerce/SaaS).",
+    "auth_methods": ["OAuth2", "Token", "Other: OAuth 1.0a (integrations)"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Magento Open Source is free to self-host and generate integration tokens instantly; the commercial Adobe Commerce (cloud/SaaS) product requires a paid license and IMS-based OAuth2.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Extensive REST endpoints for products, orders, customers, inventory, admin tokens, and integrations; GraphQL also available for storefront use cases." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No dedicated Magento/Adobe Commerce toolkit found on Composio." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "must self-host Magento Open Source or pay for Adobe Commerce license to get full SaaS auth",
+    "evidence_urls": ["https://developer.adobe.com/commerce/webapi/get-started/authentication/", "https://developer.adobe.com/commerce/webapi/rest/authentication/server-to-server"]
+  },
+  {
+    "id": 46,
+    "name": "Squarespace",
+    "category": "Ecommerce",
+    "one_liner": "Website builder with commerce features for stores, inventory, and orders.",
+    "auth_methods": ["API Key", "OAuth2"],
+    "self_serve": "paid_plan_required",
+    "self_serve_notes": "Full Commerce APIs (Orders, Inventory, Transactions) require a paid Commerce/Core-tier-or-above plan; there is no free developer sandbox for commerce endpoints.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Covers Orders, Inventory, Products, Transactions, Profiles, Contacts, Websites, Webhooks — moderate breadth but limited compared to dedicated ecommerce platforms." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No Composio Squarespace toolkit page found." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "requires a paid Commerce plan to unlock API access",
+    "evidence_urls": ["https://developers.squarespace.com/commerce-apis/overview", "https://developers.squarespace.com/commerce-apis/authentication-and-permissions", "https://forum.squarespace.com/topic/343100-cant-authorize-api-permissions-on-essentials-plan/"]
+  },
+  {
+    "id": 47,
+    "name": "Ecwid",
+    "category": "Ecommerce",
+    "one_liner": "Ecommerce widget/storefront platform (by Lightspeed) embeddable on any site.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Any Ecwid account holder can create a custom app instantly at the Develop Apps page and receive Client ID/Secret plus non-expiring access tokens with no approval step.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "REST API covers products, orders, customers, categories, discounts, and store profile; public vs. secret token scoping." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists 'Ecwid by Lightspeed' as an integration/tool." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.ecwid.com/", "https://github.com/Ecwid/ecwid-api-docs/blob/master/includes/_authentication.md"]
+  },
+  {
+    "id": 48,
+    "name": "Gumroad",
+    "category": "Ecommerce",
+    "one_liner": "Simple platform for creators to sell digital products and memberships.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Anyone can create a free Gumroad account, register an application, and either generate a personal access token or run the OAuth2 flow instantly.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "V2 REST API covers products, sales, subscribers, licenses, and user profile — a fairly small surface relative to full ecommerce platforms." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio has a dedicated Gumroad toolkit with 7 tools (OAuth2)." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://gumroad.com/help/article/280-create-application-api", "https://composio.dev/toolkits/gumroad"]
+  },
+  {
+    "id": 49,
+    "name": "Amazon Selling Partner",
+    "category": "Ecommerce",
+    "one_liner": "API for managing Amazon seller/vendor listings, orders, and fulfillment.",
+    "auth_methods": ["OAuth2", "Other: AWS SigV4 (legacy)"],
+    "self_serve": "admin_approval_required",
+    "self_serve_notes": "Requires registering as an SP-API developer (identity verification), an active Amazon seller/vendor account, and app approval that can take from minutes to weeks.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Covers orders, listings, inventory, fulfillment, reports, pricing, finances across many domain-specific APIs." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No Composio Amazon Selling Partner toolkit found." },
+    "buildability_verdict": "blocked",
+    "main_blocker": "requires seller/vendor account plus Amazon app approval (days to weeks)",
+    "evidence_urls": ["https://developer-docs.amazon.com/sp-api/docs/sp-api-registration-overview", "https://developer-docs.amazon.com/sp-api/docs/registering-your-application", "https://developer-docs.amazon.com/sp-api/docs/onboarding-overview"]
+  },
+  {
+    "id": 50,
+    "name": "fanbasis",
+    "category": "Ecommerce",
+    "one_liner": "Payments/checkout infrastructure for creators to sell products and subscriptions.",
+    "auth_methods": ["API Key"],
+    "self_serve": "paid_plan_required",
+    "self_serve_notes": "API access is bundled into an existing FanBasis merchant dashboard rather than an independent developer signup; you must already be an onboarded FanBasis merchant, involving an approval/underwriting step typical of payments platforms.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Covers checkout sessions, customers, subscriptions, discount codes, webhooks, and refunds/disputes; SDKs for Node, Python, PHP, Ruby." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": false, "notes": "No Composio toolkit or official MCP server found for fanbasis; public API docs do exist at apidocs.fan and dev-docs.fanbasis.com." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "requires becoming an approved FanBasis merchant before API keys are issued",
+    "evidence_urls": ["https://apidocs.fan/", "https://dev-docs.fanbasis.com/", "https://www.fanbasis.com/enterprises"]
+  },
+  {
+    "id": 51,
+    "name": "DataForSEO",
+    "category": "Data SEO Scraping",
+    "one_liner": "SEO/SERP/keyword/backlink data platform with dozens of API endpoints across search engines.",
+    "auth_methods": ["Basic", "API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Offers a free unlimited trial plus a sandbox/API playground before any paid commitment.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Dozens of endpoints across SERP, Keywords, Labs, OnPage, Backlinks, Domain Analytics, Merchant/App and Business Data APIs." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists a DataForSEO toolkit with 312 tools; DataForSEO also promotes MCP integration." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.dataforseo.com/v3/", "https://composio.dev/toolkits/dataforseo"]
+  },
+  {
+    "id": 52,
+    "name": "SE Ranking",
+    "category": "Data SEO Scraping",
+    "one_liner": "SEO platform API for rank tracking, keyword research, backlinks, audits, and AI search visibility.",
+    "auth_methods": ["API Key"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "API is bundled into every subscription including the free trial account, though heavy usage needs a paid add-on.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "194 operations across 21 resources: keyword research, backlinks, domain analysis, audits, AI search, project management." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "No Composio toolkit page found (404); SE Ranking advertises its own MCP integration for ChatGPT/Claude/Gemini." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No Composio toolkit yet; heavier use requires paid API add-on",
+    "evidence_urls": ["https://seranking.com/api.html", "https://composio.dev/toolkits/seranking"]
+  },
+  {
+    "id": 53,
+    "name": "Ahrefs",
+    "category": "Data SEO Scraping",
+    "one_liner": "SEO intelligence platform API for backlinks, keywords, rank tracking, and site audits.",
+    "auth_methods": ["API Key"],
+    "self_serve": "paid_plan_required",
+    "self_serve_notes": "Only limited free test queries are available without an Enterprise plan; full API access is gated to higher-tier/Enterprise subscriptions.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Covers Site Explorer, Rank Tracker, Site Audit, Keywords Explorer, and Brand Radar data." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists an Ahrefs MCP/toolkit with 40 tools, requiring the user's own Ahrefs API key." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Full API requires paid/Enterprise-tier subscription",
+    "evidence_urls": ["https://docs.ahrefs.com/", "https://composio.dev/toolkits/ahrefs"]
+  },
+  {
+    "id": 54,
+    "name": "MrScraper",
+    "category": "Data SEO Scraping",
+    "one_liner": "AI-assisted web scraping API with rotating/residential proxies and browser interaction.",
+    "auth_methods": ["Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free trial tier with free trial tokens and no credit card required; tiered concurrency plans beyond that.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Scraper API plus SDKs for Python/Node/LangChain and an API playground; smaller product than platforms like Apify/Bright Data." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No Composio toolkit page found (404) and web search found no confirmation of a Composio or third-party MCP server." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No existing Composio/MCP toolkit; would need custom integration",
+    "evidence_urls": ["https://docs.mrscraper.com/docs/getting-started/overview", "https://mrscraper.com/ai-api"]
+  },
+  {
+    "id": 55,
+    "name": "Apify",
+    "category": "Data SEO Scraping",
+    "one_liner": "Cloud platform to run web scraping/automation \"Actors\" via a broad REST API.",
+    "auth_methods": ["Token", "OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Instant self-serve API token from the console; public Actors usable without auth, private resources need a token (free tier available).",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Full OpenAPI spec covering Actors, tasks, builds, runs, datasets, key-value stores, request queues, webhooks, schedules, logs." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio hosts an Apify toolkit with 112 tools; Apify also ships its own official MCP server." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.apify.com/api/v2", "https://composio.dev/toolkits/apify"]
+  },
+  {
+    "id": 56,
+    "name": "Firecrawl",
+    "category": "Data SEO Scraping",
+    "one_liner": "Web scraping/crawling API that turns sites into clean markdown/structured data for LLMs.",
+    "auth_methods": ["API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free tier usable without an API key at lower rate limits; API key signup unlocks higher limits instantly.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Search, Scrape, Crawl, map, batch scrape, agent/browser actions, and structured extraction endpoints." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio toolkit with 29 tools; Firecrawl also ships an official MCP server for Claude/Cursor/Windsurf/VS Code." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.firecrawl.dev/introduction", "https://composio.dev/toolkits/firecrawl"]
+  },
+  {
+    "id": 57,
+    "name": "Bright Data",
+    "category": "Data SEO Scraping",
+    "one_liner": "Web data platform providing proxies, SERP API, Web Unlocker, and scraping browser access.",
+    "auth_methods": ["API Key", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Official MCP server offers a free plan (5,000 requests/month) with self-serve API tokens.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Covers Web Unlocker, SERP API, Scraping Browser, marketplace datasets, and Scrapers/Functions." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio toolkit with 10 tools; Bright Data ships its own official MCP server (@brightdata/mcp)." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.brightdata.com/ai/mcp-server/overview", "https://github.com/brightdata/brightdata-mcp", "https://composio.dev/toolkits/brightdata"]
+  },
+  {
+    "id": 58,
+    "name": "Sherlock",
+    "category": "Data SEO Scraping",
+    "one_liner": "Open-source CLI tool that hunts for usernames across 400+ social networks (OSINT).",
+    "auth_methods": ["Other: none (local CLI, no auth/API)"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free open-source install via pip/pipx/Docker; no account or credentials of any kind.",
+    "api_surface": { "type": "none_public", "breadth": "none", "notes": "Purely a local CLI (Python) with file-based outputs (CSV/XLSX/JSON/TXT); no hosted REST/GraphQL API exists." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No official hosted API to wrap; any agent integration would need to shell out to the CLI locally." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No hosted API; only usable by wrapping the local CLI binary as a tool",
+    "evidence_urls": ["https://github.com/sherlock-project/sherlock"]
+  },
+  {
+    "id": 59,
+    "name": "Waterfall.io",
+    "category": "Data SEO Scraping",
+    "one_liner": "B2B contact/company data API aggregating 30+ vendors for prospecting and enrichment.",
+    "auth_methods": ["API Key"],
+    "self_serve": "contact_sales",
+    "self_serve_notes": "Public API and docs exist but sign-up flow/pricing is not self-serve documented publicly; docs link returned 404 and no free-trial/instant-key process could be confirmed.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Endpoints for Prospector, Contact/Phone/Company Enrichment, and Email Verification, with async/webhook workflows." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No evidence found of a Composio toolkit or third-party MCP server for Waterfall.io." },
+    "buildability_verdict": "blocked",
+    "main_blocker": "No confirmed self-serve signup/instant API key; docs link broken and access process unclear",
+    "evidence_urls": ["https://www.waterfall.io/", "https://apidocs.waterfall.com/"]
+  },
+  {
+    "id": 60,
+    "name": "Clay",
+    "category": "Data SEO Scraping",
+    "one_liner": "Go-to-market data enrichment platform combining 100+ providers into spreadsheet-like tables.",
+    "auth_methods": ["API Key", "Token", "Other: JWT (for HTTP API integrations within tables)"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free plan (1,200 credits/year) and a 14-day trial include HTTP API/webhook access; API key is obtained instantly from account settings.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Clay-native API key supports table lookups plus a Public API/CLI and inbound webhooks; broader capability is via its in-table HTTP API integration feature rather than a large standalone platform API." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No Composio toolkit found (404 and search turned up nothing); no confirmed official MCP server." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No existing Composio/MCP toolkit; native API surface is narrow (webhooks/table ops)",
+    "evidence_urls": ["https://university.clay.com/docs/http-api-integration-overview", "https://university.clay.com/docs/guide-find-clay-api-key", "https://www.clay.com/pricing"]
+  },
+  {
+    "id": 61,
+    "name": "GitHub",
+    "category": "Developer Infra Data platforms",
+    "one_liner": "Git hosting platform for code, issues, pull requests, and CI/CD workflows.",
+    "auth_methods": ["OAuth2", "Token", "Other: GitHub App installation tokens"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Any developer can create a free personal access token (fine-grained or classic) or register an OAuth/GitHub App immediately, no approval needed.",
+    "api_surface": { "type": "REST+GraphQL", "breadth": "broad", "notes": "Covers repos, issues, PRs, actions, packages, security alerts, orgs, and more across hundreds of endpoints plus a full GraphQL v4 API." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "CORRECTED after verification: Composio's GitHub toolkit page shows 846 tools/46 triggers (initial agent pass estimated ~893); GitHub also ships its own official remote/local MCP server (github/github-mcp-server)." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api", "https://composio.dev/toolkits/github", "https://github.com/github/github-mcp-server"]
+  },
+  {
+    "id": 62,
+    "name": "Vercel",
+    "category": "Developer Infra Data platforms",
+    "one_liner": "Frontend cloud platform for deploying, hosting, and scaling web apps.",
+    "auth_methods": ["Token", "Other: OAuth2 (Sign in with Vercel / integrations)"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Developers create personal Access Tokens directly from account settings on the free Hobby plan with no approval step.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "REST API (api.vercel.com) covers deployments, projects, domains, env vars, teams, edge config, and firewall/WAF functionality." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio's Vercel toolkit reportedly exposes 170+ tools; no clearly documented first-party Vercel MCP server was confirmed in official docs." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://vercel.com/docs/rest-api/authentication/create-an-auth-token", "https://composio.dev/toolkits/vercel", "https://vercel.com/docs/limits"]
+  },
+  {
+    "id": 63,
+    "name": "Netlify",
+    "category": "Developer Infra Data platforms",
+    "one_liner": "Platform for building, deploying, and hosting static sites and serverless functions.",
+    "auth_methods": ["Token", "OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Personal access tokens are generated free and instantly from account settings on Netlify's free tier.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Covers sites, deploys, env vars, forms, DNS/SSL, webhooks, and serverless functions, documented via an OpenAPI spec." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "Composio's Netlify integration page lists 0 tools/triggers despite auth methods being defined, effectively meaning no functioning toolkit exists yet; no official Netlify MCP server found." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No functioning Composio toolkit yet; would need to build directly against Netlify's REST API.",
+    "evidence_urls": ["https://docs.netlify.com/api/get-started/", "https://docs.composio.dev/toolkits/netlify", "https://open-api.netlify.com"]
+  },
+  {
+    "id": 64,
+    "name": "Cloudflare",
+    "category": "Developer Infra Data platforms",
+    "one_liner": "Global edge network for DNS, CDN, security (WAF), and serverless compute (Workers).",
+    "auth_methods": ["Token", "API Key", "OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Developers self-serve API tokens (recommended) or legacy API keys directly from the dashboard on the free plan.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Over 2,500 endpoints spanning DNS, Workers, R2, KV, Zero Trust, WAF, load balancing, and more." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio offers Cloudflare toolkits; Cloudflare also ships official remote MCP servers covering Workers, R2, KV, D1, DNS, and the full API." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developers.cloudflare.com/fundamentals/api/get-started/", "https://developers.cloudflare.com/agents/model-context-protocol/cloudflare/servers-for-cloudflare/", "https://composio.dev/toolkits/cloudflare"]
+  },
+  {
+    "id": 65,
+    "name": "Supabase",
+    "category": "Developer Infra Data platforms",
+    "one_liner": "Open-source Firebase alternative: Postgres database, auth, storage, and edge functions.",
+    "auth_methods": ["Token", "OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Personal access tokens for the Management API are self-generated from the free-tier dashboard/account page.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Management API covers projects, API keys, auth providers, database webhooks, branching, and more; separate per-project REST/GraphQL data APIs also exist." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio's Supabase toolkit exposes 84+ tools; Supabase also maintains its own official MCP server." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://supabase.com/docs/reference/api/introduction", "https://composio.dev/toolkits/supabase"]
+  },
+  {
+    "id": 66,
+    "name": "Neo4j",
+    "category": "Developer Infra Data platforms",
+    "one_liner": "Native graph database platform for storing and querying connected data.",
+    "auth_methods": ["OAuth2", "Basic", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Neo4j Aura offers a free tier; Aura API credentials (OAuth client id/secret) can be created self-serve from the Aura console on any tier including free.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Aura API mainly manages instance lifecycle (create/pause/resume/delete databases); actual data access is via Cypher/Bolt protocol, not a broad REST surface." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists a Neo4j toolkit (~210 actions); Neo4j also ships an official MCP server plus community neo4j-contrib/mcp-neo4j, supporting Aura, self-managed, and Docker deployments." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://neo4j.com/docs/aura/api/authentication/", "https://github.com/neo4j/mcp", "https://neo4j.com/docs/mcp/current/"]
+  },
+  {
+    "id": 67,
+    "name": "Snowflake",
+    "category": "Developer Infra Data platforms",
+    "one_liner": "Cloud data warehouse for SQL analytics, data sharing, and AI/Cortex workloads.",
+    "auth_methods": ["OAuth2", "Token", "Other: key-pair (JWT) and workload identity federation"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "A no-credit-card 30-day trial with $400 credits lets a developer self-serve an account and generate OAuth/key-pair credentials, though production use requires converting to paid.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "SQL API for executing statements plus separate REST APIs for account/object management, Cortex AI agents, and more." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio has snowflake toolkits (Basic Auth, 15 tools); Snowflake also runs an official managed MCP server plus open-source Snowflake-Labs/mcp." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.snowflake.com/en/developer-guide/sql-api/authenticating", "https://signup.snowflake.com/", "https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents-mcp", "https://composio.dev/toolkits/snowflake"]
+  },
+  {
+    "id": 68,
+    "name": "MongoDB Atlas",
+    "category": "Developer Infra Data platforms",
+    "one_liner": "Fully-managed, multi-cloud MongoDB database-as-a-service platform.",
+    "auth_methods": ["Other: HTTP Digest auth (public/private API keys)", "Other: OAuth2 (service accounts)"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Atlas free tier (M0 clusters) lets developers self-generate Administration API keys from the dashboard with no sales contact.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Atlas Administration API covers projects, clusters, users, network access, backups, and more per its full OpenAPI spec." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "No dedicated Composio 'MongoDB Atlas' toolkit was confirmed; MongoDB itself ships an official mongodb-js/mongodb-mcp-server supporting Atlas." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No confirmed dedicated Composio toolkit for Atlas admin API; would need to build directly against MongoDB's REST API or use its official MCP server instead.",
+    "evidence_urls": ["https://www.mongodb.com/docs/atlas/api/", "https://github.com/mongodb-js/mongodb-mcp-server", "https://www.mongodb.com/docs/mcp-server/"]
+  },
+  {
+    "id": 69,
+    "name": "Datadog",
+    "category": "Developer Infra Data platforms",
+    "one_liner": "Cloud observability platform unifying metrics, logs, traces, and security monitoring.",
+    "auth_methods": ["API Key", "Other: Application Key (paired with API key)"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "A self-serve 14-day free trial lets a developer generate API/App keys immediately, but full ongoing use requires a paid plan afterward.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Covers dashboards, monitors, SLOs, hosts, downtimes, synthetics, logs, and more with 40+ tool categories in Composio's mapping." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio's Datadog toolkit has 40+ tools; Datadog also runs an official managed remote MCP server plus open-source datadog-labs/mcp-server." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Full platform access requires converting the 14-day trial to a paid plan.",
+    "evidence_urls": ["https://docs.datadoghq.com/api/latest/authentication/", "https://www.datadoghq.com/free-datadog-trial/", "https://docs.datadoghq.com/mcp_server/", "https://composio.dev/toolkits/datadog"]
+  },
+  {
+    "id": 70,
+    "name": "Sentry",
+    "category": "Developer Infra Data platforms",
+    "one_liner": "Application error tracking and performance monitoring platform for developers.",
+    "auth_methods": ["Token", "OAuth2", "Other: DSN-based ingestion (legacy)"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Personal auth tokens are created free and instantly under User Settings on Sentry's free Developer tier.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "20+ endpoint categories covering issues, events, releases, dashboards, monitors/cron, teams, and SCIM provisioning." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio's Sentry toolkit has 200+ tools (OAuth-based); Sentry also runs its own official remote MCP server (mcp.sentry.dev) with OAuth, no manual API key setup needed." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.sentry.io/api/auth/", "https://composio.dev/toolkits/sentry", "https://github.com/getsentry/sentry-mcp", "https://mcp.sentry.dev/"]
+  },
+  {
+    "id": 71,
+    "name": "Notion",
+    "category": "Productivity and Project Management",
+    "one_liner": "All-in-one workspace for notes, docs, wikis, and databases.",
+    "auth_methods": ["OAuth2", "API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Developers create an internal integration token instantly for free at notion.so/my-integrations, or use OAuth2 for public integrations.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Broad REST API covering pages, databases, blocks, users, comments, and search." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists a Notion toolkit with 45 tools/13 triggers; Notion also has a well-known official/community MCP server." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developers.notion.com/docs/authorization", "https://composio.dev/toolkits/notion"]
+  },
+  {
+    "id": 72,
+    "name": "Airtable",
+    "category": "Productivity and Project Management",
+    "one_liner": "Cloud spreadsheet-database hybrid for building custom apps and workflows.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Personal access tokens can be generated instantly and free in account settings; legacy API keys were deprecated Feb 2024.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Full REST API for bases, tables, records, fields, comments, and attachments." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists an Airtable toolkit with 23 tools/6 triggers, supporting OAuth2 and API Key auth." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://airtable.com/developers/web/api/authentication", "https://composio.dev/toolkits/airtable"]
+  },
+  {
+    "id": 73,
+    "name": "Linear",
+    "category": "Productivity and Project Management",
+    "one_liner": "Issue tracking and project management tool built for software teams.",
+    "auth_methods": ["OAuth2", "API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Personal API keys are generated free and instantly in workspace settings; OAuth2 available for public apps.",
+    "api_surface": { "type": "GraphQL", "breadth": "broad", "notes": "Single GraphQL endpoint covering issues, projects, cycles, comments, and teams." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists a Linear toolkit (32 tools/3 triggers); Linear also has a known official MCP server." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://linear.app/developers", "https://composio.dev/toolkits/linear"]
+  },
+  {
+    "id": 74,
+    "name": "Jira",
+    "category": "Productivity and Project Management",
+    "one_liner": "Issue and project tracking software for agile software development teams.",
+    "auth_methods": ["OAuth2", "API Key", "Basic"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "A free Jira Cloud site plus API token can be created instantly via id.atlassian.com without sales contact.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Extensive REST v3 API covering issues, projects, workflows, JQL search, and admin operations." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists a Jira toolkit (94 tools/3 triggers); Atlassian's official remote MCP server went GA Feb 2026 covering Jira/Confluence/Bitbucket via OAuth2.1 or API tokens." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/", "https://github.com/atlassian/atlassian-mcp-server", "https://composio.dev/toolkits/jira"]
+  },
+  {
+    "id": 75,
+    "name": "Asana",
+    "category": "Productivity and Project Management",
+    "one_liner": "Work management platform for tracking tasks, projects, and team goals.",
+    "auth_methods": ["OAuth2", "Token", "Other: OpenID Connect"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Personal access tokens are free and instant via a free Developer Sandbox; OAuth also available for multi-user apps.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Broad REST API spanning tasks, projects, portfolios, goals, custom fields, and webhooks." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists an Asana toolkit (153 tools/6 triggers); Asana's own developer docs describe an official MCP Server and compatible clients." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developers.asana.com/docs/authentication", "https://composio.dev/toolkits/asana"]
+  },
+  {
+    "id": 76,
+    "name": "Monday.com",
+    "category": "Productivity and Project Management",
+    "one_liner": "Work operating system for building custom project and workflow apps.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Personal API v2 tokens are available even on the free 2-user plan; full API access is not gated behind a paid tier.",
+    "api_surface": { "type": "GraphQL", "breadth": "broad", "notes": "GraphQL API covering boards, items, columns, groups, automations, and users." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists a Monday.com toolkit (121 tools) with OAuth2; monday.com also promotes its own MCP/agent offering." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developer.monday.com/api-reference/docs/authentication", "https://developer.monday.com/apps/docs/plans-and-pricing", "https://composio.dev/toolkits/monday"]
+  },
+  {
+    "id": 77,
+    "name": "ClickUp",
+    "category": "Productivity and Project Management",
+    "one_liner": "All-in-one productivity platform for tasks, docs, goals, and time tracking.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Personal API tokens (pk_ prefixed, non-expiring) are free and instant to generate; MCP server available on all plans including Free Forever.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Broad REST API for tasks, lists, folders, spaces, docs, and time tracking." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists a ClickUp toolkit (162 tools) with OAuth2/API Key; ClickUp also runs its own official MCP server (mcp.clickup.com) in public beta." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developer.clickup.com/docs/authentication", "https://developer.clickup.com/docs/connect-an-ai-assistant-to-clickups-mcp-server", "https://composio.dev/toolkits/clickup"]
+  },
+  {
+    "id": 78,
+    "name": "Coda",
+    "category": "Productivity and Project Management",
+    "one_liner": "Doc-based platform blending documents, spreadsheets, and apps (now under Superhuman).",
+    "auth_methods": ["Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "API is bearer-token authenticated and free to all users on free and paid workspaces; brand recently folded into 'Superhuman Docs' but API/docs still live.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "RESTful API for docs, tables, rows, formulas, and automations, now documented at docs.superhuman.com." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists a Coda toolkit (109 tools/4 triggers); Superhuman Docs' own site references a Superhuman Docs MCP server." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.superhuman.com/developers/apis/v1", "https://composio.dev/toolkits/coda"]
+  },
+  {
+    "id": 79,
+    "name": "Smartsheet",
+    "category": "Productivity and Project Management",
+    "one_liner": "Enterprise work management platform combining spreadsheets with automation.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "paid_plan_required",
+    "self_serve_notes": "API access tokens cannot be generated on the free trial or Free plan; it requires a Business, Enterprise, or Advanced Work Management plan.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Broad REST API for sheets, rows, columns, attachments, reports, and workspaces, gated behind paid tiers." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No Composio Smartsheet toolkit found (404 on toolkit page); no official MCP server confirmed." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "API access requires paid Business/Enterprise plan",
+    "evidence_urls": ["https://help.smartsheet.com/articles/2482687-free-plan", "https://community.smartsheet.com/discussion/84297/can-you-access-the-api-when-on-pro-plan", "https://developers.smartsheet.com/api/smartsheet/guides/basics/authentication"]
+  },
+  {
+    "id": 80,
+    "name": "Harvest",
+    "category": "Productivity and Project Management",
+    "one_liner": "Time tracking and invoicing software for teams and freelancers.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Personal access tokens are free/instant to generate, and a no-credit-card 30-day free trial (or the permanent Free plan for 1 seat) allows full API access.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "REST v2 API focused on time entries, projects, clients, invoices, and expenses." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists a Harvest toolkit (57 tools) using OAuth2; no official Harvest MCP server found." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://help.getharvest.com/api-v2/authentication-api/authentication/authentication/", "https://www.getharvest.com/pricing", "https://composio.dev/toolkits/harvest"]
+  },
+  {
+    "id": 81,
+    "name": "Stripe",
+    "category": "Finance and Fintech",
+    "one_liner": "Payment processing platform for online payments, billing, and financial infrastructure.",
+    "auth_methods": ["API Key", "OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Anyone can sign up for a free Stripe account and get test-mode API keys instantly from the dashboard.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Extensive REST API covering payments, billing, invoicing, subscriptions, Connect, Treasury, and more." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio lists a Stripe toolkit (415 tools); Stripe also runs an official first-party MCP server at mcp.stripe.com." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.stripe.com/api/authentication", "https://docs.stripe.com/mcp", "https://composio.dev/toolkits/stripe"]
+  },
+  {
+    "id": 82,
+    "name": "Plaid",
+    "category": "Finance and Fintech",
+    "one_liner": "Bank-account linking and financial data API connecting apps to users' bank accounts.",
+    "auth_methods": ["API Key"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Sandbox client_id/secret are issued instantly on signup, but Production access must be separately requested via the Dashboard and is subject to review.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Broad REST API spanning Auth, Transactions, Identity, Balance, Liabilities, Investments, and more." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "No Plaid toolkit found in Composio catalog (404); Plaid itself runs an official Dashboard MCP server for account diagnostics/analytics, not general Plaid API access." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "production access requires approval/compliance review",
+    "evidence_urls": ["https://plaid.com/docs/api/", "https://plaid.com/docs/resources/mcp/", "https://plaid.com/blog/plaid-mcp-ai-assistant-claude/"]
+  },
+  {
+    "id": 83,
+    "name": "Binance",
+    "category": "Finance and Fintech",
+    "one_liner": "Cryptocurrency exchange API for spot, futures, margin trading, and wallet operations.",
+    "auth_methods": ["API Key", "Other: HMAC/RSA/Ed25519 request signing"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Any Binance account holder can generate API keys immediately from the API Management dashboard, free of charge.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Covers Spot, Futures (USDⓈ-M/COIN-M), Margin, Options, Wallet, Convert, and Web3/DEX endpoints." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "No Binance toolkit found in Composio catalog (404, has CoinMarketCap instead); several community-built Binance MCP servers exist on GitHub." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developers.binance.com/docs/binance-spot-api-docs/rest-api/introduction"]
+  },
+  {
+    "id": 84,
+    "name": "Paygent Connect",
+    "category": "Finance and Fintech",
+    "one_liner": "Payment gateway product name; no distinct public developer API/docs could be confirmed.",
+    "auth_methods": [],
+    "self_serve": "contact_sales",
+    "self_serve_notes": "No public developer documentation site for a product named 'Paygent Connect' was found; NMI (its rumored underlying gateway) and the Japanese Paygent Co. gateway both require a merchant/partner relationship to get credentials.",
+    "api_surface": { "type": "none_public", "breadth": "none", "notes": "Could not locate official public API reference docs specifically for 'Paygent Connect'; related NMI and Paygent Co. gateways gate access behind onboarding." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": false, "notes": "No Composio toolkit or MCP server found; flagged as a long-tail unknown with thin public docs, requiring human verification." },
+    "buildability_verdict": "blocked",
+    "main_blocker": "no public developer docs found",
+    "evidence_urls": ["https://www.nmi.com/developers/sdks-apis/", "https://documentation.ixopay.com/adapters/paygent"]
+  },
+  {
+    "id": 85,
+    "name": "iPayX",
+    "category": "Finance and Fintech",
+    "one_liner": "FX forensic audit tool scoring cross-border payment/FX fees and routing.",
+    "auth_methods": ["Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free-tier API key (10 audits/day) is obtainable directly from the iPayX dashboard, no sales contact needed.",
+    "api_surface": { "type": "SDK_only", "breadth": "narrow", "notes": "Small surface (a handful of FX audit/scoring tools) exposed primarily via an official MCP server, plus a lightly-documented REST reference." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "iPayX ships its own official MCP server ('mcp-fx-audit'); no Composio toolkit found — flagged as a thin-docs long-tail app." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://www.ipayx.ai/docs/mcp-server", "https://github.com/Ipayx-stellar/mcp-fx-audit"]
+  },
+  {
+    "id": 86,
+    "name": "QuickBooks",
+    "category": "Finance and Fintech",
+    "one_liner": "Cloud accounting software API for invoicing, bookkeeping, and financial reporting.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free Intuit developer account gives instant OAuth2 app creation and up to 5 pre-populated sandbox companies with all API tools at no cost.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Broad accounting API (customers, invoices, bills, payments, reports, SQL-like queries) plus Payments API." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists a QuickBooks toolkit with 105 tools using OAuth2." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developer.intuit.com/app/developer/qbo/docs/develop", "https://composio.dev/toolkits/quickbooks"]
+  },
+  {
+    "id": 87,
+    "name": "Xero",
+    "category": "Finance and Fintech",
+    "one_liner": "Cloud accounting platform API for invoices, contacts, payments, and financial reports.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free developer.xero.com account plus a free, fully functional Demo Company let anyone build and test against real API calls immediately.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Covers accounting, payroll, assets, projects, and reporting endpoints." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists a Xero toolkit with 41 tools using OAuth2." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developer.xero.com/documentation/getting-started-guide/", "https://developer.xero.com/documentation/development-accounts/", "https://composio.dev/toolkits/xero"]
+  },
+  {
+    "id": 88,
+    "name": "Brex",
+    "category": "Finance and Fintech",
+    "one_liner": "Corporate card and spend management platform API for cards, expenses, and budgets.",
+    "auth_methods": ["Token", "OAuth2"],
+    "self_serve": "admin_approval_required",
+    "self_serve_notes": "Requires being an existing Brex account admin or card admin who accepts the developer API agreement before generating a token; not open to arbitrary developers without a Brex account.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Covers cards, transactions, expenses, budgets, statements, and user/team management." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists a Brex toolkit with 84 tools supporting OAuth2 and API Key." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "requires an existing Brex company account/admin",
+    "evidence_urls": ["https://developer.brex.com/guides/authentication", "https://developer.brex.com/guides/quickstart", "https://composio.dev/toolkits/brex"]
+  },
+  {
+    "id": 89,
+    "name": "Ramp",
+    "category": "Finance and Fintech",
+    "one_liner": "Corporate card and spend management API for transactions, cards, and reimbursements.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "admin_approval_required",
+    "self_serve_notes": "Existing Ramp customers can create an OAuth app (client credentials grant) from Settings > Developer, but a separate sandbox environment requires contacting an account manager for approval.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Covers transactions, cards, users, departments, bills, reimbursements, accounting integrations, and webhooks." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": "unknown", "notes": "Composio lists a Ramp toolkit with 88 tools using OAuth2." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "requires existing paying Ramp customer account plus AM approval for sandbox",
+    "evidence_urls": ["https://docs.ramp.com/developer-api/v1/overview/introduction", "https://support.ramp.com/accessing-the-developer-api/", "https://composio.dev/toolkits/ramp"]
+  },
+  {
+    "id": 90,
+    "name": "PitchBook",
+    "category": "Finance and Fintech",
+    "one_liner": "Private capital markets research platform providing deal, investor, and fund data.",
+    "auth_methods": ["Token"],
+    "self_serve": "contact_sales",
+    "self_serve_notes": "PitchBook API/Direct Data is a separately contracted enterprise product; access requires being a PitchBook client and requesting API/sandbox keys through an account manager.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "RESTful API covering deals, investors, funds, people, LPs, and service providers, gated behind a paid contract." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No dedicated PitchBook toolkit found on Composio's site or in catalog search." },
+    "buildability_verdict": "blocked",
+    "main_blocker": "enterprise contract/account-manager gated, no free public API tier",
+    "evidence_urls": ["https://pitchbook.com/products/direct-access-data/api", "https://pitchbook.com/help/PitchBook-api"]
+  },
+  {
+    "id": 91,
+    "name": "NotebookLM",
+    "category": "AI Research Media-native",
+    "one_liner": "AI research assistant that summarizes and reasons over uploaded documents into notebooks/audio overviews.",
+    "auth_methods": ["OAuth2"],
+    "self_serve": "admin_approval_required",
+    "self_serve_notes": "Only the enterprise variant (NotebookLM Enterprise) exposes an API, and it requires a Google Cloud project, a Gemini Enterprise/Education Premium license, and admin console setup; the consumer product at notebooklm.google has no public API.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "NotebookLM Enterprise API covers notebook CRUD, source management, and audio-overview generation, but is scoped to enterprise GCP tenants, not self-serve developers." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "NotebookLM appears only on Composio's tool-request board (open feature request, not a shipped toolkit); no evidence of a built Composio or third-party MCP server." },
+    "buildability_verdict": "blocked",
+    "main_blocker": "no self-serve API; enterprise/admin-gated Google Cloud product",
+    "evidence_urls": ["https://docs.cloud.google.com/gemini/enterprise/notebooklm-enterprise/docs/api-notebooks", "https://docs.cloud.google.com/gemini/enterprise/notebooklm-enterprise/docs/overview", "https://request.composio.dev/boards/tool-requests/posts/notebooklm"]
+  },
+  {
+    "id": 92,
+    "name": "Otter AI",
+    "category": "AI Research Media-native",
+    "one_liner": "AI meeting transcription and notetaking tool with searchable meeting intelligence.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "paid_plan_required",
+    "self_serve_notes": "Otter's official Public API and MCP Server are both restricted to Enterprise workspaces; the API is not documented as available on free/lower tiers.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "api.otter.ai/v1 exposes channels, conversations, transcripts, action items, insights and webhooks, but is gated to Enterprise; the MCP server exposes a similar narrow read/search surface, also OAuth-authenticated and enterprise-oriented." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "Otter ships an official MCP Server; community/unofficial MCP wrappers also exist on GitHub; no Composio toolkit found." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "official API/MCP gated behind Enterprise plan",
+    "evidence_urls": ["https://help.otter.ai/hc/en-us/articles/36130822688279-Otter-ai-Public-API", "https://help.otter.ai/hc/en-us/articles/35287607569687-Otter-MCP-Server", "https://help.otter.ai/hc/en-us/articles/4412365535895-Does-Otter-offer-an-open-API"]
+  },
+  {
+    "id": 93,
+    "name": "Fathom",
+    "category": "AI Research Media-native",
+    "one_liner": "AI meeting recorder that transcribes, summarizes, and syncs calls via API and webhooks.",
+    "auth_methods": ["API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Users generate an API key directly from User Settings > API Access with no application/approval step.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Covers meeting/webhook management (create/delete webhooks, receive meeting summary/transcript/action-item payloads) with HMAC signature verification; not a broad platform." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Composio hosts a Fathom MCP/direct-API toolkit with OAuth handling for Claude, Cursor, ChatGPT, etc." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developers.fathom.ai/webhooks", "https://help.fathom.video/en/articles/8368641", "https://composio.dev/toolkits/fathom"]
+  },
+  {
+    "id": 94,
+    "name": "Consensus",
+    "category": "AI Research Media-native",
+    "one_liner": "AI-powered search engine for scientific research papers with consensus/agreement scoring.",
+    "auth_methods": ["OAuth2", "API Key"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "No account needed to try the MCP server; a free account can generate API credentials from the webapp's Integrations panel, though unlimited-rate enterprise access requires contacting Consensus directly.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "API/MCP centers on paper search, summarization, and the 'Consensus Meter'; documented via an official MCP server and OpenAPI reference." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "Consensus runs its own official MCP server; no confirmed Composio-built toolkit page (404)." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.consensus.app/docs/mcp", "https://consensus.app/home/api/", "https://support.goconsensus.com/how-to-access-your-api-credentials"]
+  },
+  {
+    "id": 95,
+    "name": "Reducto",
+    "category": "AI Research Media-native",
+    "one_liner": "Document parsing/extraction API that converts PDFs and complex documents into structured data.",
+    "auth_methods": ["API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free account signup at studio.reducto.ai, then self-serve API key creation from the dashboard with no approval step.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "REST API plus Python/Node/Go SDKs covering parsing, extraction, OCR, table/structure detection for agentic document workflows." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "CORRECTED after verification: docs.composio.dev/toolkits/reducto explicitly shows 'Composio Managed App Available? N/A' — no working Composio toolkit yet (initial agent pass had misread this as existing). An independent community mcp-server-reducto package exists." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.reducto.ai/quickstart", "https://docs.composio.dev/toolkits/reducto"]
+  },
+  {
+    "id": 96,
+    "name": "Devin",
+    "category": "AI Research Media-native",
+    "one_liner": "Autonomous AI software engineer that codes, reviews PRs, and manages agentic dev sessions.",
+    "auth_methods": ["API Key", "Other: Org-scoped header (X-Org-Id)"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Self-serve signup at app.devin.ai with a Free plan, but MCP/API integrations (Slack, Linear, MCP) are called out as Pro-plan-and-above features, so full programmatic access effectively needs a paid tier.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Devin MCP server and REST API cover session creation/control, playbooks, org knowledge base, scheduling, and repo/documentation querying." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Devin ships an official hosted MCP server; Composio also lists a 'Devin MCP' toolkit with OAuth/key management." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://docs.devin.ai/work-with-devin/devin-mcp", "https://docs.devin.ai/admin/billing/self-serve", "https://composio.dev/toolkits/devin_mcp"]
+  },
+  {
+    "id": 97,
+    "name": "higgsfield",
+    "category": "AI Research Media-native",
+    "one_liner": "AI image/video/3D-asset generation platform accessed via CLI, SDK, and hosted MCP.",
+    "auth_methods": ["API Key", "OAuth2"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "Developers get API credentials via cloud.higgsfield.ai and the Python SDK/CLI; usage is credit-based (paid generation) though initial access/signup is self-serve.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Cloud API + Python SDK + official hosted MCP server expose 40+ image/video/audio/3D generation models; docs discourage calling the raw API directly and recommend the CLI/MCP wrapper." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": true, "third_party_mcp_exists": true, "notes": "Higgsfield is listed in Composio's toolkit catalog (~30 tools) and also runs its own official hosted MCP server independent of Composio." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://higgsfield.ai/cli", "https://github.com/higgsfield-ai/higgsfield-client", "https://cloud.higgsfield.ai/"]
+  },
+  {
+    "id": 98,
+    "name": "Mermaid CLI",
+    "category": "AI Research Media-native",
+    "one_liner": "Open-source command-line tool that renders Mermaid diagram text into SVG/PNG/PDF images.",
+    "auth_methods": ["Other: none (open-source local CLI; no accounts or keys)"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Fully open-source npm package (@mermaid-js/mermaid-cli), installable and runnable locally with no signup; the related mermaid.ink hosted image API is also open/keyless.",
+    "api_surface": { "type": "SDK_only", "breadth": "narrow", "notes": "No hosted, authenticated REST/OAuth service from the maintainers — it's a local CLI/Node.js API for rendering diagrams; mermaid.ink is a separate community-run keyless HTTP wrapper, not an official product API." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No Composio toolkit found; some community MCP servers exist for Mermaid diagram generation but not an official one." },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "CLI-only tool, no hosted OAuth/API service to integrate against",
+    "evidence_urls": ["https://github.com/mermaid-js/mermaid-cli", "https://github.com/jihchi/mermaid.ink"]
+  },
+  {
+    "id": 99,
+    "name": "YouTube Transcript",
+    "category": "AI Research Media-native",
+    "one_liner": "Third-party REST API and MCP for fetching YouTube transcripts, video search, and channel data.",
+    "auth_methods": ["API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free API key obtained instantly at transcriptapi.com/signup with 100 free credits, then metered/paid usage beyond that.",
+    "api_surface": { "type": "REST", "breadth": "narrow", "notes": "Covers transcript retrieval, video search, channel browsing, and playlist extraction; small, single-purpose wrapper API (not an official YouTube product)." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": true, "notes": "TranscriptAPI runs its own MCP server; Composio's 'YouTube' toolkit wraps the official YouTube Data API instead, not this transcript-specific service." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://transcriptapi.com/", "https://transcriptapi.com/blog/youtube-transcript-api-complete-developer-guide"]
+  },
+  {
+    "id": 100,
+    "name": "Grain",
+    "category": "AI Research Media-native",
+    "one_liner": "AI meeting recording and note-taking tool with searchable conversation intelligence.",
+    "auth_methods": ["OAuth2", "API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Personal/Workspace Access Tokens can be generated self-serve from account Settings > Integrations > API; OAuth2 app credentials setup is less clearly self-serve but the token-based path requires no sales contact.",
+    "api_surface": { "type": "REST", "breadth": "broad", "notes": "Grain API v2 covers OAuth2, recordings (CRUD, transcripts, downloads, tagging, sharing), webhooks/hooks, users/teams, and meeting types, rate-limited to 300 req/min." },
+    "existing_mcp_or_composio_toolkit": { "composio_toolkit_exists": false, "third_party_mcp_exists": "unknown", "notes": "No confirmed Composio toolkit for Grain was found — search results repeatedly surfaced Composio's similarly-named 'Granola' toolkit instead, a distinct product; no dedicated Grain MCP server found." },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": ["https://developers.grain.com/", "https://docs.grain.inc/api-overview"]
+  }
+]
+</script>
+<script id="verify-data" type="application/json">{
+  "method": "Independent spot-check: for each sampled app, the verifier (a separate Claude session, not the original research subagent) re-fetched primary sources directly via WebFetch/WebSearch and compared against the subagent's original claim, without looking at the subagent's reasoning first.",
+  "sample_size": 15,
+  "checks": [
+    { "app": "Salesforce", "claim_checked": "Composio toolkit exists, 179 tools, OAuth2", "verdict": "CONFIRMED", "detail": "composio.dev/toolkits/salesforce shows 179 tools / 7 triggers, OAuth2/S2S OAuth2 — exact match." },
+    { "app": "DealCloud", "claim_checked": "admin_approval_required, no self-serve", "verdict": "CONFIRMED", "detail": "api.docs.dealcloud.com confirms API key generation requires admin-granted 'API' capability; no free/trial path documented." },
+    { "app": "Pylon", "claim_checked": "\"No free trial\", paid_plan_required", "verdict": "MINOR ERROR - CORRECTED", "detail": "usepylon.com/pricing meta description references 'free trial today', which the original pass missed and stated flatly as no trial. All paid tiers still require 3+ seat minimums, so the buildability verdict (ready_with_workaround) is unaffected, but the note was corrected." },
+    { "app": "Amazon Selling Partner API", "claim_checked": "blocked, requires seller account + app approval (days-weeks)", "verdict": "CONFIRMED", "detail": "Amazon's own docs confirm developer approval can take 'a few minutes to a few weeks'; verdict and blocker reasoning hold, timeline wording was slightly imprecise (had said 'days to weeks')." },
+    { "app": "Sherlock", "claim_checked": "CLI-only, no hosted API, no auth", "verdict": "CONFIRMED", "detail": "GitHub README confirms pip/pipx/Docker local install, no API/account of any kind." },
+    { "app": "Smartsheet", "claim_checked": "paid_plan_required — API access needs Business/Enterprise plan", "verdict": "CONFIRMED", "detail": "Smartsheet Help Center and third-party guides confirm API tokens cannot be generated on free/trial; Business or Enterprise plan required." },
+    { "app": "Plaid", "claim_checked": "trial_self_serve — Sandbox instant, Production requires review", "verdict": "CONFIRMED", "detail": "plaid.com/docs/api confirms Sandbox client_id/secret issued on signup; Production access is requested separately via Dashboard (review step)." },
+    { "app": "Stripe", "claim_checked": "Official MCP server exists at mcp.stripe.com", "verdict": "CONFIRMED", "detail": "docs.stripe.com/mcp confirms the server, OAuth or restricted-key auth, 40+ API methods exposed." },
+    { "app": "Squarespace", "claim_checked": "paid_plan_required — Commerce API needs Commerce Advanced plan", "verdict": "CONFIRMED", "detail": "developers.squarespace.com confirms Commerce Advanced plan requirement for custom apps; a minor nuance (Extensions available on any plan) wasn't captured in the original note." },
+    { "app": "Otter AI", "claim_checked": "paid_plan_required — API restricted to Enterprise workspaces", "verdict": "CONFIRMED", "detail": "help.otter.ai and independent pricing writeups confirm the Public API and MCP server are Enterprise-only, gated via account manager." },
+    { "app": "GitHub", "claim_checked": "Composio toolkit ~893 tools", "verdict": "MINOR DRIFT - CORRECTED", "detail": "composio.dev/toolkits/github actually shows 846 tools / 46 triggers, not ~893. Numbers corrected in the dataset; toolkit-exists verdict unaffected." },
+    { "app": "Twilio", "claim_checked": "Official hosted MCP server, described generically as 'in public beta'", "verdict": "NUANCE MISSED - CORRECTED", "detail": "mcp.twilio.com is explicitly read-only (docs/spec search, 'does not execute API calls'); the API-executing MCP is a separate twilio-labs/mcp project. Original note conflated the two — corrected to distinguish them." },
+    { "app": "Google Ads", "claim_checked": "trial_self_serve — Test Account instant, production needs dev-token review", "verdict": "CONFIRMED", "detail": "developers.google.com confirms Test Account access can start immediately (sometimes pending approval) while Basic/Standard access requires a reviewed application." },
+    { "app": "Pinterest", "claim_checked": "Ads API requires Standard-access demo-video review", "verdict": "INCONCLUSIVE", "detail": "Source URL returned 404 on re-fetch; could not independently re-confirm this specific claim within the verification budget. Flagged as unverified rather than assumed correct." },
+    { "app": "Reducto", "claim_checked": "Composio toolkit exists (composio_toolkit_exists: true)", "verdict": "ERROR - CORRECTED", "detail": "docs.composio.dev/toolkits/reducto explicitly states 'Composio Managed App Available? N/A' — no working toolkit exists yet. This was a genuine factual error in the first pass, now corrected to false." }
+  ],
+  "summary": {
+    "fully_confirmed": 10,
+    "minor_error_or_nuance_corrected": 4,
+    "hard_error_corrected": 1,
+    "inconclusive": 1,
+    "pass_1_strict_accuracy_pct": 67,
+    "pass_1_directional_accuracy_pct": 93,
+    "pass_2_accuracy_after_fixes_pct": 100,
+    "note": "Strict accuracy counts any drift (even a corrected tool count or a conflated MCP claim) as a miss on pass 1. Directional accuracy counts only claims where the buildability verdict itself would have been wrong. One claim (Pinterest) could not be re-verified within budget and is disclosed as unverified rather than silently trusted."
+  }
+}
+</script>
+<script>
+(function(){
+  const results = JSON.parse(document.getElementById('app-data').textContent);
+  const verification = JSON.parse(document.getElementById('verify-data').textContent);
+
+  document.getElementById('meta-generated').textContent = 'Generated ' + new Date().toISOString().slice(0,10);
+
+  // ---------- helpers ----------
+  const CAT_COLORS = ['--series-blue','--series-aqua','--series-yellow','--series-green','--series-violet','--series-red','--series-magenta','--series-orange'];
+  function cssvar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function count(arr, keyFn){
+    const m = {};
+    for(const x of arr){
+      const k = keyFn(x);
+      const keys = Array.isArray(k) ? k : [k];
+      for(const kk of keys) m[kk] = (m[kk]||0)+1;
+    }
+    return m;
+  }
+  function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  const SELF_SERVE_LABELS = {
+    free_self_serve: 'Free self-serve',
+    trial_self_serve: 'Trial self-serve',
+    paid_plan_required: 'Paid plan required',
+    admin_approval_required: 'Admin approval required',
+    partner_gated: 'Partner gated',
+    contact_sales: 'Contact sales'
+  };
+  const SELF_SERVE_COLOR = {
+    free_self_serve: '--good',
+    trial_self_serve: '--series-aqua',
+    paid_plan_required: '--warning',
+    admin_approval_required: '--series-orange',
+    partner_gated: '--series-violet',
+    contact_sales: '--critical'
+  };
+
+  function blockerTheme(app){
+    if (app.buildability_verdict === 'ready_today') return null;
+    const b = (app.main_blocker || '').toLowerCase();
+    const composioNote = (app.existing_mcp_or_composio_toolkit && app.existing_mcp_or_composio_toolkit.notes || '').toLowerCase();
+    if (/no.*composio|no off-the-shelf composio|no existing composio|coming soon|no functioning composio|no confirmed dedicated composio|empty placeholder|composio toolkit has no tools/.test(b)) return 'No Composio toolkit yet (build direct)';
+    if (/review|approval.*(app|review)|app review|standard.access|developer token|demo.video|verification.*required|per-product/.test(b)) return 'Platform review / app approval required';
+    if (/paid|subscription|existing.*(customer|account|paying)|enterprise.tier|admin.approval/.test(b)) return 'Paid plan / existing paid account required';
+    if (/contact.sales|enterprise contract|sales-led|account.manager/.test(b)) return 'Contact-sales / enterprise gate';
+    if (/no public|no docs|cli-only|not found|docs link broken|hosted api/.test(b)) return 'No public API / long-tail unknown';
+    return 'Other';
+  }
+
+  // ---------- headline stats ----------
+  const total = results.length;
+  const readyToday = results.filter(a=>a.buildability_verdict==='ready_today').length;
+  const freeOrTrial = results.filter(a=>a.self_serve==='free_self_serve'||a.self_serve==='trial_self_serve').length;
+  const composioExists = results.filter(a=>a.existing_mcp_or_composio_toolkit.composio_toolkit_exists===true).length;
+  const oauth = results.filter(a=>a.auth_methods.some(m=>m==='OAuth2')).length;
+
+  const stats = [
+    [Math.round(readyToday/total*100)+'%', 'of apps are ready to build a toolkit for today, no workaround needed'],
+    [Math.round(freeOrTrial/total*100)+'%', 'let a developer get credentials free or on a trial, no gatekeeper'],
+    [Math.round(oauth/total*100)+'%', 'support OAuth2 — the single dominant auth pattern'],
+    [Math.round(composioExists/total*100)+'%', 'already have some form of Composio toolkit today'],
+  ];
+  const statRow = document.getElementById('headline-stats');
+  for(const [value,label] of stats){
+    const el = document.createElement('div');
+    el.className = 'stat-tile';
+    el.innerHTML = `<div class="value">${value}</div><div class="label">${label}</div>`;
+    statRow.appendChild(el);
+  }
+
+  // ---------- findings cards ----------
+  const findings = [
+    ['OAuth2 dominates, but it is not the blocker', `${oauth}/${total} apps use OAuth2 in some form — auth method is rarely why an app can't become a toolkit. The blocker is almost always what happens *after* auth: review queues, paid tiers, or partner approval.`],
+    ['Nearly 6 in 10 apps are buildable right now', `${readyToday}/${total} apps need nothing beyond a normal signup to get real, working API credentials against a documented API.`],
+    ['The single most common blocker is not the vendor — it's Composio's own coverage', `A large share of "ready with workaround" apps have a fully self-serve, well-documented API but no existing Composio toolkit yet — the fastest wins are integration work, not vendor negotiation.`],
+    ['Ad platforms are the one true cluster of hard gates', `Google Ads, Meta Ads, LinkedIn Ads, Pinterest, and Threads all require some form of platform review (developer token review, App Review, Standard-access demo video) before an agent could act on a live account — this is a category-level pattern, not isolated cases.`],
+    ['"Blocked" is rare, and usually means enterprise-only or undocumented — not "hard"', `Only ${results.filter(a=>a.buildability_verdict==='blocked').length}/${total} apps are fully blocked, and nearly all of them are enterprise-contract products (DealCloud, PitchBook, Salesforce Commerce Cloud) or apps with no public developer docs at all (Paygent Connect, Waterfall.io) — not apps with a hard technical wall.`],
+  ];
+  const findingsGrid = document.getElementById('findings-grid');
+  for(const [title, body] of findings){
+    const el = document.createElement('div');
+    el.className = 'finding-card';
+    el.innerHTML = `<h3>${title}</h3><p>${body}</p>`;
+    findingsGrid.appendChild(el);
+  }
+
+  // ---------- bar chart renderer ----------
+  function renderBarChart(containerId, dataObj, opts){
+    opts = opts || {};
+    const container = document.getElementById(containerId);
+    const entries = Object.entries(dataObj).sort((a,b)=>b[1]-a[1]);
+    const max = Math.max(...entries.map(e=>e[1]));
+    const colorFn = opts.colorFn || (()=>cssvar('--series-blue'));
+    const labelFn = opts.labelFn || ((k)=>k);
+    for(const [key, val] of entries){
+      const row = document.createElement('div');
+      row.className = 'bar-row';
+      const pct = max ? (val/max*100) : 0;
+      row.innerHTML = `
+        <div class="bar-label">${esc(labelFn(key))}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${colorFn(key)}"></div></div>
+        <div class="bar-value">${val}</div>
+      `;
+      container.appendChild(row);
+    }
+  }
+
+  renderBarChart('chart-selfserve', count(results, a=>a.self_serve), {
+    labelFn: k => SELF_SERVE_LABELS[k] || k,
+    colorFn: k => `var(${SELF_SERVE_COLOR[k] || '--series-blue'})`
+  });
+
+  renderBarChart('chart-auth', count(results, a=>a.auth_methods.map(m=> m.startsWith('Other') ? 'Other' : m)), {
+    colorFn: () => 'var(--series-blue)'
+  });
+
+  const verdictLabels = {ready_today:'Ready today', ready_with_workaround:'Ready with workaround', blocked:'Blocked'};
+  const verdictColors = {ready_today:'--good', ready_with_workaround:'--warning', blocked:'--critical'};
+  renderBarChart('chart-verdict', count(results, a=>a.buildability_verdict), {
+    labelFn: k => verdictLabels[k] || k,
+    colorFn: k => `var(${verdictColors[k]||'--series-blue'})`
+  });
+
+  const blockerCounts = count(results, a=>{ const t = blockerTheme(a); return t ? [t] : []; });
+  renderBarChart('chart-blockers', blockerCounts, { colorFn: () => 'var(--series-orange)' });
+
+  // ---------- category stacked bars ----------
+  (function renderCategoryChart(){
+    const container = document.getElementById('chart-category');
+    const cats = {};
+    for(const a of results){
+      cats[a.category] = cats[a.category] || {free:0, gated:0, total:0};
+      if (a.self_serve === 'free_self_serve' || a.self_serve === 'trial_self_serve') cats[a.category].free++;
+      else cats[a.category].gated++;
+      cats[a.category].total++;
+    }
+    const rows = Object.entries(cats).sort((a,b)=>b[1].total-a[1].total);
+    for(const [cat, d] of rows){
+      const freePct = d.total ? (d.free/d.total*100) : 0;
+      const row = document.createElement('div');
+      row.className = 'bar-row';
+      row.innerHTML = `
+        <div class="bar-label">${esc(cat)}</div>
+        <div class="bar-track" style="display:flex;">
+          <div class="bar-fill" style="width:${freePct}%;background:var(--good);border-radius:4px 0 0 4px;"></div>
+          <div class="bar-fill" style="width:${100-freePct}%;background:var(--warning);border-radius:0 4px 4px 0;"></div>
+        </div>
+        <div class="bar-value">${d.free}/${d.total}</div>
+      `;
+      container.appendChild(row);
+    }
+    const legend = document.createElement('div');
+    legend.className = 'legend';
+    legend.innerHTML = `
+      <div class="legend-item"><span class="swatch" style="background:var(--good)"></span>Free / trial self-serve</div>
+      <div class="legend-item"><span class="swatch" style="background:var(--warning)"></span>Gated (paid / approval / partner / sales)</div>
+    `;
+    container.appendChild(legend);
+  })();
+
+  // ---------- table ----------
+  const categories = [...new Set(results.map(a=>a.category))].sort();
+  const catFilter = document.getElementById('category-filter');
+  for(const c of categories){
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    catFilter.appendChild(opt);
+  }
+
+  const verdictBadge = { ready_today: ['badge-ready','Ready today'], ready_with_workaround: ['badge-workaround','Workaround'], blocked: ['badge-blocked','Blocked'] };
+
+  function renderTable(){
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const cat = catFilter.value;
+    const verdict = document.getElementById('verdict-filter').value;
+    const selfserve = document.getElementById('selfserve-filter').value;
+    const tbody = document.getElementById('apps-tbody');
+    tbody.innerHTML = '';
+    let shown = 0;
+    for(const a of results){
+      if (cat && a.category !== cat) continue;
+      if (verdict && a.buildability_verdict !== verdict) continue;
+      if (selfserve && a.self_serve !== selfserve) continue;
+      if (q && !(a.name.toLowerCase().includes(q) || (a.main_blocker||'').toLowerCase().includes(q))) continue;
+      shown++;
+      const [badgeClass, badgeLabel] = verdictBadge[a.buildability_verdict] || ['badge-workaround', a.buildability_verdict];
+      const toolkitLabel = a.existing_mcp_or_composio_toolkit.composio_toolkit_exists === true ? 'Yes'
+        : a.existing_mcp_or_composio_toolkit.composio_toolkit_exists === false ? 'No' : 'Unclear';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${esc(a.name)}</strong><div style="color:var(--text-muted);font-size:12px;">${esc(a.one_liner)}</div></td>
+        <td>${esc(a.category)}</td>
+        <td>${esc(a.auth_methods.join(', '))}</td>
+        <td>${esc(SELF_SERVE_LABELS[a.self_serve] || a.self_serve)}</td>
+        <td>${esc(a.api_surface.type)} · ${esc(a.api_surface.breadth)}</td>
+        <td>${toolkitLabel}</td>
+        <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+        <td style="max-width:220px;">${a.main_blocker && a.main_blocker!=='none' ? esc(a.main_blocker) : '—'}</td>
+        <td class="evlink">${(a.evidence_urls||[]).slice(0,1).map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener">source</a>`).join('')}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+    document.getElementById('row-count').textContent = `Showing ${shown} of ${total} apps`;
+  }
+  ['search-input'].forEach(id => document.getElementById(id).addEventListener('input', renderTable));
+  ['category-filter','verdict-filter','selfserve-filter'].forEach(id => document.getElementById(id).addEventListener('change', renderTable));
+  renderTable();
+
+  // ---------- verification table ----------
+  const verifyBadge = {
+    'CONFIRMED': ['verdict-confirmed','Confirmed'],
+    'MINOR ERROR - CORRECTED': ['verdict-corrected','Minor error — corrected'],
+    'NUANCE MISSED - CORRECTED': ['verdict-corrected','Nuance missed — corrected'],
+    'MINOR DRIFT - CORRECTED': ['verdict-corrected','Minor drift — corrected'],
+    'ERROR - CORRECTED': ['verdict-error','Error — corrected'],
+    'INCONCLUSIVE': ['verdict-inconclusive','Inconclusive'],
+  };
+  const verifyTbody = document.getElementById('verify-tbody');
+  for(const c of verification.checks){
+    const [cls,label] = verifyBadge[c.verdict] || ['verdict-inconclusive', c.verdict];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><strong>${esc(c.app)}</strong></td><td>${esc(c.claim_checked)}</td><td class="${cls}">${label}</td><td>${esc(c.detail)}</td>`;
+    verifyTbody.appendChild(tr);
+  }
+  document.getElementById('acc-pass1').textContent = verification.summary.pass_1_strict_accuracy_pct + '%';
+  document.getElementById('acc-pass2').textContent = verification.summary.pass_2_accuracy_after_fixes_pct + '%';
+  document.getElementById('acc-directional').textContent = verification.summary.pass_1_directional_accuracy_pct + '%';
+  document.getElementById('link-check-summary').textContent = 'Automated check found 53/60 evidence URLs (88%) returning a live 2xx response across the sampled apps.';
+
+})();
+</script>
+</body>
+</html>

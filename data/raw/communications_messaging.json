@@ -1,0 +1,258 @@
+[
+  {
+    "id": 21,
+    "name": "Slack",
+    "category": "Communications and Messaging",
+    "one_liner": "Channel-based team chat and workflow platform with an extensive developer API.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Anyone can create a Slack app at api.slack.com/apps and self-serve OAuth2 credentials instantly, free.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "broad",
+      "notes": "Web API covers messaging, channels, users, files, reactions, admin, and more with hundreds of methods."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": true,
+      "third_party_mcp_exists": true,
+      "notes": "Composio Slack toolkit has 167 tools/9 triggers; official MCP reference server plus many community MCP servers exist."
+    },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": [
+      "https://docs.composio.dev/toolkits/slack",
+      "https://docs.slack.dev/authentication/installing-with-oauth",
+      "https://github.com/modelcontextprotocol/servers/tree/main/src/slack"
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Twilio",
+    "category": "Communications and Messaging",
+    "one_liner": "Cloud communications platform for programmable SMS, voice, and messaging APIs.",
+    "auth_methods": ["Basic", "API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free trial signup on twilio.com immediately gives Account SID/Auth Token and API key creation in the Console.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "broad",
+      "notes": "Over 1,800 endpoints across 30+ products (SMS, Voice, WhatsApp, Video, Verify, etc)."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": true,
+      "third_party_mcp_exists": true,
+      "notes": "Composio Twilio toolkit exists; Twilio also ships its own official hosted MCP server (mcp.twilio.com, twilio-labs/mcp) in public beta."
+    },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": [
+      "https://docs.composio.dev/toolkits/twilio",
+      "https://www.twilio.com/docs/iam/api",
+      "https://www.twilio.com/docs/ai/mcp"
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Zoho Cliq",
+    "category": "Communications and Messaging",
+    "one_liner": "Team chat app from Zoho with bots, webhooks, and REST API for automation.",
+    "auth_methods": ["OAuth2", "Token", "Other: Webhook/ZAPI key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free Zoho account lets developers generate webhook tokens or OAuth2 client credentials in the Cliq platform console instantly.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "narrow",
+      "notes": "REST API v2/v3 plus platform features (bots, slash commands, widgets, functions) but narrower/less standard than major chat platforms."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": false,
+      "third_party_mcp_exists": true,
+      "notes": "No dedicated Composio Zoho Cliq toolkit found (composio.dev/toolkits/zoho_cliq 404s); Zoho itself ships an official Zoho MCP server covering Cliq among other Zoho apps."
+    },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No off-the-shelf Composio toolkit; must build against Cliq's narrower REST/webhook API",
+    "evidence_urls": [
+      "https://www.zoho.com/cliq/help/platform/getting-started-with-cliq-platform.html",
+      "https://www.zoho.com/cliq/help/restapi/v3/introduction/",
+      "https://www.zoho.com/cliq/help/platform/zoho-cliq-mcp.html",
+      "https://www.zoho.com/cliq/help/platform/webhook-tokens.html"
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Lark (Larksuite)",
+    "category": "Communications and Messaging",
+    "one_liner": "All-in-one enterprise collaboration suite with chat, docs, and open platform APIs.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "admin_approval_required",
+    "self_serve_notes": "Developers must belong to an enterprise tenant (create or be invited) and self-built apps need tenant admin approval before use, though no Lark platform review is required internally.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "broad",
+      "notes": "Open Platform covers Messenger, Docs, Base, Sheets, Calendar, Mail, Tasks, Meetings with granular per-scope permission configuration."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": false,
+      "third_party_mcp_exists": true,
+      "notes": "No Composio toolkit found (404); Lark publishes an official CLI/agent-skills tool and an official OpenClaw plugin that function like MCP-style agent integrations."
+    },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Requires enterprise tenant + admin approval to install self-built apps; no Composio toolkit",
+    "evidence_urls": [
+      "https://open.larksuite.com/document/home/introduction-to-custom-app-development/self-built-application-development-process",
+      "https://github.com/larksuite/cli",
+      "https://github.com/larksuite/openclaw-lark"
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Pumble",
+    "category": "Communications and Messaging",
+    "one_liner": "Free team chat app (by CAKE.com) with channels, DMs, and a lightweight REST API.",
+    "auth_methods": ["API Key"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Any user can install the free API-keys addon and generate a key instantly via a slash command, no approval needed.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "narrow",
+      "notes": "Swagger-documented API covers messaging, reactions, channels, and DMs but is a small action set compared to major platforms."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": false,
+      "third_party_mcp_exists": true,
+      "notes": "No Composio toolkit (404); at least one community MCP server for Pumble exists."
+    },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Narrow API surface and no Composio toolkit",
+    "evidence_urls": [
+      "https://pumble.com/help/integrations/automation-workflow-integrations/api-keys-integration/",
+      "https://lobehub.com/mcp/shoutkol-pumble-mcp-server"
+    ]
+  },
+  {
+    "id": 26,
+    "name": "Discord",
+    "category": "Communications and Messaging",
+    "one_liner": "Community/social chat platform with voice, servers, and an extensive bot/OAuth API.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free instant self-serve app/bot creation via the Discord Developer Portal, no approval for basic use.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "broad",
+      "notes": "Broad REST API plus Gateway (WebSocket) covering servers, channels, messages, moderation, voice, and more."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": true,
+      "third_party_mcp_exists": true,
+      "notes": "Composio has both a Discord toolkit (28 tools/1 trigger) and a Discord Bot toolkit; many community MCP servers also exist."
+    },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": [
+      "https://docs.composio.dev/toolkits/discord",
+      "https://docs.discord.com/developers/topics/oauth2"
+    ]
+  },
+  {
+    "id": 27,
+    "name": "Telegram",
+    "category": "Communications and Messaging",
+    "one_liner": "Cloud messaging app with a simple, free HTTP Bot API for automation.",
+    "auth_methods": ["Token"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free, instant bot token issuance via BotFather chat, no signup form or approval needed.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "narrow",
+      "notes": "HTTP-based Bot API with a moderate but bounded method set (messages, chats, media, updates); full client API (MTProto) is separate and heavier."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": true,
+      "third_party_mcp_exists": true,
+      "notes": "Composio Telegram toolkit lists 18 tools; several community MCP servers for Telegram also exist."
+    },
+    "buildability_verdict": "ready_today",
+    "main_blocker": "none",
+    "evidence_urls": [
+      "https://docs.composio.dev/toolkits/telegram",
+      "https://core.telegram.org/bots/api"
+    ]
+  },
+  {
+    "id": 28,
+    "name": "WhatsApp Business",
+    "category": "Communications and Messaging",
+    "one_liner": "Meta's WhatsApp Cloud API for business messaging, templates, and automation.",
+    "auth_methods": ["OAuth2", "Token"],
+    "self_serve": "trial_self_serve",
+    "self_serve_notes": "A Meta developer account and app can be created for free with a temporary token for testing, but production use needs Meta Business verification, a permanent system-user token, and message-template approval.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "narrow",
+      "notes": "Focused messaging API (send/receive messages, templates, media, business profile) rather than a broad platform."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": true,
+      "third_party_mcp_exists": true,
+      "notes": "Composio has a WhatsApp toolkit (Business API only, not personal WhatsApp); numerous community MCP servers exist for the Cloud API."
+    },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Meta Business verification and template/phone-number approval needed for production sending",
+    "evidence_urls": [
+      "https://docs.composio.dev/toolkits/whatsapp",
+      "https://developers.facebook.com/docs/whatsapp/cloud-api/get-started"
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Aircall",
+    "category": "Communications and Messaging",
+    "one_liner": "Cloud-based business phone system with call, SMS, and CRM-integration APIs.",
+    "auth_methods": ["OAuth2", "Basic"],
+    "self_serve": "paid_plan_required",
+    "self_serve_notes": "Existing Aircall customers can self-serve generate Basic Auth API keys in Company Settings, but that requires an active paid Aircall subscription; OAuth2 (for marketplace partner apps) needs Aircall partner approval.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "narrow",
+      "notes": "Covers calls, contacts, users, numbers, and webhooks — a focused telephony API rather than a broad platform."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": "unknown",
+      "third_party_mcp_exists": true,
+      "notes": "Aircall listed in Composio's toolkit catalog but no confirmed dedicated toolkit page found; an unofficial third-party MCP server exists, explicitly not built/endorsed by Aircall."
+    },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "Basic Auth API keys require an existing paid Aircall account; OAuth2 route requires partner approval",
+    "evidence_urls": [
+      "https://developer.aircall.io/api-references/",
+      "https://github.com/themobilefirstco/aircall-mcp-server"
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Vonage",
+    "category": "Communications and Messaging",
+    "one_liner": "Programmable communications platform for SMS, voice, video, and verification APIs.",
+    "auth_methods": ["Basic", "Token", "Other: JWT"],
+    "self_serve": "free_self_serve",
+    "self_serve_notes": "Free self-serve signup grants an API key/secret plus free trial credit immediately from the developer dashboard.",
+    "api_surface": {
+      "type": "REST",
+      "breadth": "broad",
+      "notes": "Broad set of communications APIs: SMS, Voice, Video, Verify, Number Insight, Messages, and more."
+    },
+    "existing_mcp_or_composio_toolkit": {
+      "composio_toolkit_exists": false,
+      "third_party_mcp_exists": true,
+      "notes": "No Composio Vonage toolkit found (404); Vonage itself ships multiple official MCP servers (documentation MCP server, API bindings/tooling MCP server, telephony MCP server)."
+    },
+    "buildability_verdict": "ready_with_workaround",
+    "main_blocker": "No Composio toolkit yet, though Vonage's own official MCP servers cover much of the gap",
+    "evidence_urls": [
+      "https://developer.vonage.com/en/getting-started/overview",
+      "https://github.com/Vonage/vonage-mcp-server-documentation",
+      "https://github.com/Vonage-Community/telephony-mcp-server"
+    ]
+  }
+]

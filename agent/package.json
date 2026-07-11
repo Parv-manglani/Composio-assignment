@@ -1,0 +1,16 @@
+{
+  "name": "composio-app-research-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Research pipeline that scores 100 apps for AI-agent toolkit buildability, using the Composio SDK for toolkit-existence checks and Claude (with web search) for docs research.",
+  "scripts": {
+    "research": "node research.mjs",
+    "research:sample": "node research.mjs --limit=10",
+    "verify": "node verify.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0",
+    "@composio/core": "^1.0.0"
+  }
+}
